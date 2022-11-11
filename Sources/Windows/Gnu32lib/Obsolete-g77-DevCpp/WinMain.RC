@@ -1,0 +1,12 @@
+// Optionale Zuordnung einer Icon-Bitmap WinMainIcon
+//
+
+// Verwenden der Tektronix-Icons für das Hauptfenster
+//
+WinMainIcon  ICON "Terminal.ICO"     // Zur Umschaltung mit <Ctrl><Tab>
+WinMainIconS ICON "Terminal.ICO"     // Fuer die Taskleiste
+
+// Hier: Definition der Icons für das Tektronix-Fenster
+//
+Graph2DIcon  ICON "Terminal.ICO"     // Zur Umschaltung mit <Ctrl><Tab>
+Graph2DIconS ICON "Terminal.ICO"     // Fuer die Taskleiste

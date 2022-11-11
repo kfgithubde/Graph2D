@@ -1,0 +1,13 @@
+  5,GRAPHLIB %%% INIT: Incompatible message file (Press any key to continue)
+ 10,GRAPHLIB %%% INIT: Unknown graphic adapter
+ 10,GRAPHLIB %%% INIT: Error opening fontfile $$
+ 10,GRAPHLIB %%% INIT: Unknown font $$
+  1,GRAPHLIB %%% INPUT: No mousedriver available, use keyboard
+  5,GRAPHLIB %%% HARDCOPY: Error during OPEN
+  5,GRAPHLIB %%% HARDCOPY: Error during WRITE
+  5,GRAPHLIB %%% HARDCOPY: Internal error (buffer overflow)
+  1,$$
+  1,Hardcopy in progress
+  5,Press any key to continue
+  5,Press any key to exit program
+ 

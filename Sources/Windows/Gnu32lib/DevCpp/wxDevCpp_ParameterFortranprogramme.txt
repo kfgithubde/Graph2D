@@ -1,0 +1,12 @@
+Projekt -> Optionen -> Dateien -> 
+(in Kompilation einbeziehen, Ins Linken einbeziehen, Überschreibe Build Kommando 
+->
+gfortran -c -xf77 Ag2demo1.for -oObjects/MingW/Ag2demo1.o
+
+Projekt -> Optionen -> Zusätzliche Kommandozeilen Optionen -> Linker 
+->
+Output/MingW/teklib.a
+-static-libgcc
+-static-libgfortran
+-mwindows
+-lgfortran

@@ -1,0 +1,11 @@
+// Optionale Zuordnung einer Icon-Bitmap zum STRING Graph2DIcon
+// Die Unterprogramme rufen LoadIcon mit Stringparameter auf,
+// Graph2DIcon darf also NICHT im *.h-File ein numerischer Wert
+// zugewiesen werden!
+// Der Name dieses Resourcefiles darf nicht identisch zu dem eines
+// anderen Modules des Programmes sein (also nicht AG2demo1.for und
+// AG2demo1.rc), da sonst der GCC-Linker falsche Eigenschaften
+// (Dateigröße) in das exe-File eintraegt.
+
+Graph2DIcon  ICON "Graph2D16.ICO"    // Fuer das Zeichenfenster
+WinMainIcon  ICON "Graph2D32.ICO"    // Fuer das Hauptprogrammfenster

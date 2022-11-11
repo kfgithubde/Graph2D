@@ -1,0 +1,51 @@
+C> \file       G2dAG2.fd
+C> \brief      Graph2D: AG2 Common Block G2dAG2
+C> \version    2.0
+C> \author     (C) 2022 Dr.-Ing. Klaus Friedewald
+C> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+C
+C  Da die folgende Definition kein Bestandteil eines Moduls
+C  ist versagt der DOXYGEN-Parser bei der Kombination von
+C  COMMON und integer. Workaraound: \\cond ... \\endcond
+C> \cond
+
+C Common Block G2dAG2, Version 2.0 für AG2
+C     Die Funktion der Variablen entspricht dem Tektronix AG2 User-Manual,
+C     jedoch sind die achsenbezogenen Variablen in einem Feld zusammenge-
+C     fasst. Die x-Achse wird durch Index=1, y durch Index=2 beschrieben.
+C
+      integer     cline,csymbl,csteps ! ibase+ 0..2
+      real        cinfin ! 3
+      integer     cnpts,cstepl,cnumbr ! 4..6
+      real        csizes,csizel ! 7,8
+
+      logical     cxyneat(2),cxyzero(2) ! nbase+ 0, 1
+      integer     cxyloc(2),cxylab(2),cxyden(2),cxytics(2) ! nbase+ 2..5
+      integer     cxylen(2),cxyfrm(2),cxymtcs(2),cxymfrm(2),cxydec(2) ! 6..10
+      real        cxydmin(2),cxydmax(2) ! 11,12
+      integer     cxysmin(2),cxysmax(2),cxytype(2) ! 13..15
+      integer     cxylsig(2),cxywdth(2),cxyepon(2) ! 16..18
+      integer     cxystep(2),cxystag(2),cxyetyp(2) ! 19..21
+      integer     cxybeg(2),cxyend(2),cxymbeg(2),cxymend(2) ! 22..25
+      real        cxyamin(2),cxyamax(2) ! 26,27
+
+      common /G2dAG2/
+C     & extent,cvectr,xvectr,yvectr,
+C     & xtentc,xtentx,xtenty,
+C
+     & cline,csymbl,csteps,
+     & cinfin,
+     & cnpts,cstepl,cnumbr,csizes,csizel,
+C
+     & cxyneat,cxyzero,cxyloc,cxylab,cxyden,cxytics,
+     & cxylen,cxyfrm,cxymtcs,cxymfrm,cxydec,
+     & cxydmin,cxydmax,cxysmin,cxysmax,cxytype,
+     & cxylsig,cxywdth,cxyepon,cxystep,cxystag,cxyetyp,
+     & cxybeg,cxyend,cxymbeg,cxymend,cxyamin,cxyamax
+C
+C     & reserv(8)
+      save /G2dAG2/
+
+      integer G2dAG2L         ! Benoetigt von SAVCOM, RESCOM
+      parameter (G2dAG2L=65)  ! integer, real und logical gleich lang!
+C> \endcond

@@ -1,0 +1,389 @@
+C> \file    Fgraph.fd
+C> \brief   DOS Port: Declarations OW graph.lib
+C>
+C> \~german
+C> Konstanten und Funktionen der Watcom DOS Graphik-Library. Ersatz für das zum
+C> Microsoft Fortan-Compiler gehörende INCLUDE-File, abgeleitet aus dem
+C> Watcom-Headerfile graph.fi.
+C>
+C> \~english
+C> Functions and constants of the Watcom DOS Graphic Library. Substitution for
+C> the INCLUDE-file of the Microsoft Fortran Compiler, derived from the
+C> Watcom Headerfile graph.fi.
+C>
+C> \~
+C> \author  Dr.-Ing. Klaus Friedewald
+C>
+C> \~german
+C> \note
+C> Der Watcom Compiler erlaubt 32 Zeichen lange Variablennamen unter Verwendung
+C> von $ und _. Deswegen sind $notruncate und $notstrict überflüssig.
+C>
+C> \note
+C> Hex-Zahlen werden nicht durch \#ff sondern durch 'ff'x dargestellt.
+C>
+C> \note
+C> Die OpenWatcom Library graph.lib ist nicht Bestandteil von Graph2Ddos.lib
+C> und muss bei den Linkoptionen der Hauptprogramme aufgeführt werden:
+C> -libr graph.
+C> \~english
+C> \note
+C> Watcom-FTN77 variable names are allowed to be 32 characters long and may
+C> contain $ and _. That for $notruncate und $notstrict are superfluous.
+C>
+C> \note
+C> Hexadecimal numbers are represented by 'ff'x instead of \#ff.
+C>
+C> \note
+C> The Watcom library graph.lib ist not included in Graph2Ddos.lib and has to 
+C> be linked to the main programs:
+C> -libr graph.
+C> \~
+C> 
+C> \cond
+ 
+      structure/videoconfig/      ! structure for getvideoconfig
+        integer*2 numxpixels      
+        integer*2 numypixels     
+        integer*2 numtextcols      
+        integer*2 numtextrows      
+        integer*2 numcolors      
+        integer*2 bitsperpixel     
+        integer*2 numvideopages    
+        integer*2 mode            
+        integer*2 adapter         
+        integer*2 monitor         
+        integer*2 memory           
+      end structure
+
+      structure/xycoord/          ! structure for pixel position
+        integer*2 xcoord
+        integer*2 ycoord
+      end structure
+ 
+      structure/rccoord/          ! structure for text position
+        integer*2 row
+        integer*2 col
+      end structure
+
+C Videomodes
+
+      integer*2, $MAXRESMODE, $MAXCOLORMODE, $DEFAULTMODE,$TEXTBW40,
+     1           $TEXTC40,$TEXTBW80,$TEXTC80, $MRES4COLOR,$MRESNOCOLOR,
+     2           $HRESBW,$TEXTMONO,$HERCMONO, $MRES16COLOR,$HRES16COLOR,
+     3           $ERESNOCOLOR,$ERESCOLOR, $VRES2COLOR,$VRES16COLOR,
+     4           $MRES256COLOR,$ORESCOLOR
+      parameter($MAXRESMODE   =-3)    ! graphics mode with highest resolution
+      parameter($MAXCOLORMODE =-2)    ! graphics mode with most colors
+      parameter($DEFAULTMODE  =-1)    ! restore screen to original mode
+      parameter($TEXTBW40      =0)    ! 40 x 25 text, 16 grey
+      parameter($TEXTC40       =1)    ! 40 x 25 text, 16/8 color
+      parameter($TEXTBW80      =2)    ! 80 x 25 text, 16 grey
+      parameter($TEXTC80       =3)    ! 80 x 25 text, 16/8 color
+      parameter($MRES4COLOR    =4)    ! 320 x 200, 4 color
+      parameter($MRESNOCOLOR   =5)    ! 320 x 200, 4 grey
+      parameter($HRESBW        =6)    ! 640 x 200, BW
+      parameter($TEXTMONO      =7)    ! 80 x 25 text, BW
+      parameter($HERCMONO      =8)    ! 720 x 348, BW for HGC
+      parameter($MRES16COLOR   =13)   ! 320 x 200, 16 color
+      parameter($HRES16COLOR   =14)   ! 640 x 200, 16 color
+      parameter($ERESNOCOLOR   =15)   ! 640 x 350, BW
+      parameter($ERESCOLOR     =16)   ! 640 x 350, 4 or 16 color
+      parameter($VRES2COLOR    =17)   ! 640 x 480, BW
+      parameter($VRES16COLOR   =18)   ! 640 x 480, 16 color
+      parameter($MRES256COLOR  =19)   ! 320 x 200, 256 color
+      parameter($ORESCOLOR     =64)   ! 640 x 400, 1 of 16 colors (Olivetti)
+
+      integer*4 $MDPA,$CGA,$EGA,$MCGA,$VGA,$HGC,$OCGA,$OEGA,$OVGA
+      parameter($MDPA     ='0001'x)    ! Monochrome Display Adapter (MDPA)
+      parameter($CGA      ='0002'x)    ! Color Graphics Adapter     (CGA)
+      parameter($EGA      ='0004'x)    ! Enhanced Graphics Adapter  (EGA)
+      parameter($VGA      ='0008'x)    ! Video Graphics Array       (VGA)
+      parameter($MCGA     ='0010'x)    ! MultiColor Graphics Array  (MCGA)
+      parameter($HGC      ='0020'x)    ! Hercules Graphics Card     (HGC)
+      parameter($OCGA     ='0042'x)    ! Olivetti Color Graphics Adapter (OCGA)
+      parameter($OEGA     ='0044'x)    ! Olivetti Enhanced Graphics Adapter (OEGA)
+      parameter($OVGA     ='0048'x)    ! Olivetti Video Graphics Array (OVGA)
+
+      integer*4 $MONO,$COLOR,$ENHCOLOR,$ANALOGMONO,$ANALOGCOLOR,$ANALOG
+      parameter($MONO       ='0001'x)     ! Monochrome
+      parameter($COLOR      ='0002'x)     ! Color (or Enhanced emulating color)
+      parameter($ENHCOLOR   ='0004'x)     ! Enhanced Color
+      parameter($ANALOGMONO ='0008'x)     ! Analog Monochrome only
+      parameter($ANALOGCOLOR='0010'x)     ! Analog Color only
+      parameter($ANALOG     ='0018'x)     ! Analog
+
+C Plotting Action
+
+      integer*2 $GBORDER,$GFILLINTERIOR,
+     1          $GCLEARSCREEN, $GVIEWPORT,$GWINDOW
+
+      parameter($GBORDER       =2)      ! draw outline only
+      parameter($GFILLINTERIOR =3)      ! fill using current fill mask
+
+      parameter($GCLEARSCREEN=0)
+      parameter($GVIEWPORT   =1)
+      parameter($GWINDOW     =2)
+
+      integer*4 $GCURSOROFF,$GCURSORON,$GWRAPOFF,$GWRAPON
+      parameter($GCURSOROFF=0)
+      parameter($GCURSORON =1)
+
+      parameter($GWRAPOFF  =0)
+      parameter($GWRAPON   =1)
+
+      integer*4 $GSCROLLUP, $GSCROLLDOWN
+      parameter($GSCROLLUP   =1)
+      parameter($GSCROLLDOWN =-1)
+
+      integer*4 $MAXTEXTROWS
+      parameter($MAXTEXTROWS =-1)
+
+      integer*4 $GPSET,$GPRESET,$GAND,$GOR,$GXOR
+      parameter($GPSET         =3)
+      parameter($GPRESET       =2)
+      parameter($GAND          =1)
+      parameter($GOR           =0)
+      parameter($GXOR          =4)
+
+      integer*4 $BLACK,$BLUE,$GREEN,$CYAN,$RED,$MAGENTA,$BROWN,
+     1          $WHITE,$GRAY, $LIGHTBLUE,$LIGHTGREEN,$LIGHTCYAN,
+     2          $LIGHTRED,$LIGHTMAGENTA, $LIGHTYELLOW,$BRIGHTWHITE
+      parameter($BLACK         ='000000'x)
+      parameter($BLUE          ='2a0000'x)
+      parameter($GREEN         ='002a00'x)
+      parameter($CYAN          ='2a2a00'x)
+      parameter($RED           ='00002a'x)
+      parameter($MAGENTA       ='2a002a'x)
+      parameter($BROWN         ='00152a'x)
+      parameter($WHITE         ='2a2a2a'x)
+      parameter($GRAY          ='151515'x)
+      parameter($LIGHTBLUE     ='3F1515'x)
+      parameter($LIGHTGREEN    ='153f15'x)
+      parameter($LIGHTCYAN     ='3f3f15'x)
+      parameter($LIGHTRED      ='15153f'x)
+      parameter($LIGHTMAGENTA  ='3f153f'x)
+      parameter($LIGHTYELLOW   ='153f3f'x)
+      parameter($BRIGHTWHITE   ='3f3f3f'x)
+
+      integer*4 $MODEFOFF,$MODEFOFFTOON,$MODEFOFFTOHI,$MODEFONTOOFF,
+     1          $MODEFON,$MODEFONTOHI,$MODEFHITOOFF,$MODEFHITOON,
+     2          $MODEFHI
+      parameter($MODEFOFF      =0)
+      parameter($MODEFOFFTOON  =1)
+      parameter($MODEFOFFTOHI  =2)
+      parameter($MODEFONTOOFF  =3)
+      parameter($MODEFON       =4)
+      parameter($MODEFONTOHI   =5)
+      parameter($MODEFHITOOFF  =6)
+      parameter($MODEFHITOON   =7)
+      parameter($MODEFHI       =8)
+
+      integer*4 $MODE7OFF,$MODE7ON,$MODE7HI
+      parameter($MODE7OFF      =0)
+      parameter($MODE7ON       =1)
+      parameter($MODE7HI       =2)
+
+C external functions 
+
+      external setvideomode
+      integer*2 setvideomode
+
+      external setvideomoderows
+      integer*2 setvideomoderows
+
+      external setactivepage
+      integer*2 setactivepage
+
+      external setvisualpage
+      integer*2 setvisualpage
+
+      external getactivepage
+      integer*2 getactivepage
+
+      external getvisualpage
+      integer*2 getvisualpage
+
+      external getvideoconfig
+      external setvieworg
+      external getviewcoord
+      external getphyscoord
+      external setcliprgn
+      external setviewport
+      external clearscreen
+      external moveto
+      external getcurrentposition
+
+      external lineto
+      integer*2 lineto
+
+      external rectangle
+      integer*2 rectangle
+
+      external ellipse
+      integer*2 ellipse
+
+      external arc
+      integer*2 arc
+
+      external pie
+      integer*2 pie
+
+      external setpixel
+      integer*2 setpixel
+
+      external getpixel
+      integer*2 getpixel
+
+      external floodfill
+      integer*2 floodfill
+
+      external setcolor
+      integer*2 setcolor
+
+      external getcolor
+      integer*2 getcolor
+
+      external setlinestyle
+
+      external getlinestyle
+      integer*2 getlinestyle
+
+      external setfillmask
+      external getfillmask
+
+      external setbkcolor
+      integer*4 setbkcolor
+
+      external getbkcolor
+      integer*4 getbkcolor
+
+      external remappalette
+      integer*4 remappalette
+
+      external remapallpalette
+      integer*2 remapallpalette
+
+      external selectpalette
+      integer*2 selectpalette
+
+      external settextrows
+      integer*2 settextrows
+
+      external settextwindow
+      external scrolltextwindow
+      external outtext
+
+      external wrapon
+      integer*2 wrapon
+
+      external displaycursor
+      integer*2 displaycursor
+
+      external settextcursor
+      integer*2 settextcursor
+
+      external gettextcursor
+      integer*2 gettextcursor
+
+      external settextposition
+      external gettextposition
+
+      external settextcolor
+      integer*2 settextcolor
+
+      external gettextcolor
+      integer*2 gettextcolor
+
+      external getimage
+      external putimage
+
+      external imagesize
+      integer*4 imagesize
+
+
+	  
+      structure/wxycoord/       ! window coordinates
+        double precision wx   
+        double precision wy    
+      end structure
+
+      external setwindow
+      integer*2 setwindow
+
+      external getwindowcoord
+      external getviewcoord_w
+      external getcurrentposition_w
+
+
+      external arc_w
+      integer*2 arc_w
+
+      external ellipse_w
+      integer*2 ellipse_w
+
+      external floodfill_w
+      integer*2 floodfill_w
+
+      external getpixel_w
+      integer*2 getpixel_w
+
+      external lineto_w
+      integer*2 lineto_w
+
+      external moveto_w
+
+      external pie_w
+      integer*2 pie_w
+
+      external rectangle_w
+      integer*2 rectangle_w
+
+      external setpixel_w
+      integer*2 setpixel_w
+
+      external getimage_w
+
+      external imagesize_w
+      integer*2 imagesize_w
+
+      external putimage_w
+
+      structure/fontinfo/
+        integer*2 type          ! b0 set = vector,clear = bit map
+        integer*2 ascent        ! pix dist from top to baseline
+        integer*2 pixwidth      ! character width in pixels, 0=prop
+        integer*2 pixheight     ! character height in pixels
+        integer*2 avgwidth      ! average character width in pixels
+        character*81 filename   ! file name including path
+        character*32 facename   ! font name
+      end structure
+
+
+      integer*2 $NO_SPACE, $FIXED_SPACE, $PROP_SPACE
+      parameter ($NO_SPACE    = 0)
+      parameter ($FIXED_SPACE = 1)
+      parameter ($PROP_SPACE  = 2)
+
+      integer*2 $NO_FONT_MAP, $VECTOR_MAP, $BIT_MAP
+      parameter ($NO_FONT_MAP = 0)
+      parameter ($VECTOR_MAP  = 1)
+      parameter ($BIT_MAP     = 2)
+
+      external registerfonts
+      integer*2 registerfonts
+
+      external unregisterfonts
+
+      external setfont
+      integer*2 setfont
+
+      external getfontinfo
+      integer*2 getfontinfo
+
+      external outgtext
+
+      external getgtextextent
+      integer*2 getgtextextent
+C
+C> \endcond

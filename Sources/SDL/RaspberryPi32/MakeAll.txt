@@ -1,0 +1,48 @@
+gcc Toolchain:
+https://github.com/abhiTronix/raspberry-pi-cross-compilers
+https://sourceforge.net/projects/raspberry-pi-cross-compilers/
+https://github.com/abhiTronix/raspberry-pi-cross-compilers/wiki
+
+SDL2:
+https://choccyhobnob.com/sdl2-2-0-8-on-raspberry-pi/
+https://developer-blog.net/opengl-mit-sdl-und-glew-auf-dem-raspberry-pi/
+https://forum-raspberrypi.de/forum/thread/56153-anzeige-kann-in-pygame-2-auf-raspberry-pi-os-lite-bullseye-nicht-initialisiert-w/
+https://retropie.org.uk/forum/topic/31924/could-not-successfully-build-sdl2-on-bullseye
+https://maker-tutorials.com/raspberry-pi-touchscreen-installieren-und-anschliessen-tipps-tricks/
+
+MiniXML:
+sudo apt-get install libmxml-dev
+
+
+
+Raspberry Pi OS with desktop
+
+    Release date: September 22nd 2022
+    System: 32-bit
+    Kernel version: 5.15
+    Debian version: 11 (bullseye)
+    Size: 894MB
+
+Displays:
+https://strobelstefan.org/2015/07/14/rpi-display-28-lcd-for-raspberry-pi-b/
+https://www.circuitbasics.com/setup-lcd-touchscreen-raspberry-pi/
+
+https://www.berrybase.de/gehaeuse-fuer-raspberry-pi-4-und-3-5-display-schwarz
+https://www.waveshare.com/wiki/3.5inch_RPi_LCD_(A)
+https://www.berrybase.de/3-5-display-fuer-raspberry-pi-mit-resistivem-touchscreen?c=320
+
+Compilieren auf RaspberryPi:
+
+mkdir obj
+gcc -c TCSdSDLc.c -o obj/TCSdSDLc.o
+
+Installation Fortran:
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install gfortran
+
+Installation SDL2
+sudo apt-get install libsdl2 - unötig, bereits standardmässig vorhanden
+sudo apt-get install libsdl2-dev
+sudo apt-get install libsdl2-ttf-dev
+

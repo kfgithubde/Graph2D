@@ -1,0 +1,16 @@
+; Pascal Procedure Graphjob fuer GRAPH.BIB
+
+jmpfar  equ     0fff1h
+Jmpadr  ext
+par1    ext
+par2    ext
+par3    ext
+par4    ext
+
+        ld      hl,(JmpAdr)
+        ld      de,(Par1)
+        ld      bc,(Par2)
+        ld      ix,(Par3)
+        ld      iy,(Par4)
+        call    jmpfar
+        end

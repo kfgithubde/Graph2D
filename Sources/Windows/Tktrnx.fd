@@ -1,0 +1,56 @@
+C> \file       TKTRNX.fd
+C> \brief      MS Windows Port: TCS Common Block TKTRNX
+C> \version    1.3
+C> \author     (C) 2022 Dr.-Ing. Klaus Friedewald
+C> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+C>
+C> \~german
+C> Header passend zu TKTRNX.h 
+C> \note
+C> Da die folgende Definition kein Bestandteil eines Moduls
+C> ist, versagt der DOXYGEN-Parser bei der Kombination von
+C> COMMON und INTEGER. Workaraound: \\cond ... \\endcond.
+C> \~english
+C> header belonging to TKTRNX.h
+C> \note
+C> Because the following definition not beeing part of a module, the
+C> DOXYGEN parser is not able to handle the combination of COMMON
+C> and INTEGER declarations.  Workaraound: \\cond ... \\endcond.
+C> \~
+C> \cond
+C Common Block TKTRNX, Version 1.3 für WINDOWS
+C
+      COMMON /TKTRNX/
+C           kbaudr,kerror,kgrafl,
+     & khomey,
+C           kkmode,
+     & khorsz,kversz,
+     & kitalc,ksizef,
+     & klmrgn,krmrgn, kScrX,kScrY,
+C           ktblsz,khorzt(10),kvertt(10),
+     & kbeamx,kbeamy,
+C           kmovef,kpchar(4),kdasht,
+     & kminsx,kminsy,kmaxsx,kmaxsy,tminvx,tminvy,tmaxvx,tmaxvy,
+C      trealx,trealy,timagx,timagy,
+     & trcosf,trsinf,trscal
+     & ,xfac,yfac,xlog,ylog,kStCol,
+     & iLinCol, iBckCol, iTxtCol, iMouse
+
+      SAVE /TKTRNX/
+      integer iTktrnxL
+      parameter (iTktrnxL=31) ! +11)
+
+C Neue Variablen:
+C     kHorSz,kVerSz: Buchstabengröße im (1024/780) Koordinatensystem
+C     kScrX, kScrY: Zeichenfläche in Pixeln
+C           Unterer Bildschirmrand für eine Statuszeile freigehalten
+C     kBeamX, kBeamY: Aktuelle Strahlposition im (1024/780) Koordinatensystem
+C     kStCol: Maximale Zeichenzahl in der Statuszeile
+C     iLinCol, iBckCol, iTxtCol: Farbindices
+C     iMouse: Anzahl der Maustasten. iMouse=0: keine Maus vorhanden
+C
+C Achtung:
+C       Anpassung Parameters iTktrnxL der Routinen SVSTAT, RESTAT aus TCS.FOR!
+C     Vorsicht, bei Integer*2 Variablen zählen Real-Variablen doppelt (*4!)
+C
+C> \endcond

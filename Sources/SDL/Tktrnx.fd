@@ -1,0 +1,45 @@
+C> \file Tktrnx.fd
+C> \brief   SDL Port: TCS Common Block TKTRNX
+C> \version 1.2
+C> \author  Dr.-Ing. Klaus Friedewald
+C> \~german
+C> Header passend zu TKTRNX.h 
+C> \note
+C> Da die folgende Definition kein Bestandteil eines Moduls
+C> ist, versagt der DOXYGEN-Parser bei der Kombination von
+C> COMMON und INTEGER. Workaraound: \\cond ... \\endcond.
+C> \~english
+C> header belonging to TKTRNX.h
+C> \note
+C> Because the following definition not beeing part of a module, the
+C> DOXYGEN parser is not able to handle the combination of COMMON
+C> and INTEGER declarations.  Workaraound: \\cond ... \\endcond.
+C> \~
+C> \cond
+
+      COMMON /TKTRNX/
+     & khomey,
+     & khorsz,kversz,
+     & kitalc,ksizef,
+     & klmrgn,krmrgn,
+     & kbeamx,kbeamy,
+     & kminsx,kminsy,kmaxsx,kmaxsy,tminvx,tminvy,tmaxvx,tmaxvy,
+     & trcosf,trsinf,trscal
+     & ,xfac,yfac,xlog,ylog,kStCol,
+     & iLinCol, iBckCol, iTxtCol
+
+      SAVE /TKTRNX/
+      integer iTktrnxL
+      parameter (iTktrnxL=28) ! +11)
+C Neue Variablen:
+C     kHorSz,kVerSz: Buchstabengröße im (1024/780) Koordinatensystem
+C     kBeamX, kBeamY: Aktuelle Strahlposition im (1024/780) Koordinatensystem
+C     kStCol: Maximale Zeichenzahl in der Statuszeile
+C     iLinCol, iBckCol, iTxtCol: Farbindices
+C
+C Achtung:
+C       Anpassung Parameters iTktrnxL der Routinen SVSTAT, RESTAT aus TCS.FOR!
+C       Vorsicht, bei Integer*2 Variablen zählen Real-Variablen doppelt (*4!)
+C
+C> \endcond
+	

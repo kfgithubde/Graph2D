@@ -1,0 +1,108 @@
+(* Turbo-Pascal Treiber fuer C128-Graphik
+    17.5.88        Dr.-Ing. K. Friedewald    *)
+
+const
+  OrgConOut = 825; (* Turbo 3.0 und CP/M 80  *)
+  OrgError = 8414;
+
+var
+ WhereX, WhereY : integer;
+
+procedure OrgGotoXY (x,y:integer); begin GotoXY(x,y) end;
+
+procedure graphjob (JmpAdr, par1, par2, par3, par4: integer);
+ begin INLINE ($2A/JMPADR/$ED/$5B/PAR1/$ED/$4B/PAR2/$DD/$2A/PAR3
+                /$FD/$2A/PAR4/$CD/$F1/$FF ) end;
+
+procedure GraphStatus (JmpAdr: integer; var par1,par2,par3,par4: integer);
+ begin INLINE ($2A/PAR1/$5E/$23/$56/$2A/PAR2/$4E/$23/$46/$2A/JMPADR/$CD/$F1/$FF
+        /$2A/PAR1/$73/$23/$72/$2A/PAR2/$71/$23/$70/$2A/PAR3/$DD/$E5/$D1/$73/$23
+        /$72/$FD/$E5/$D1/$2A/PAR4/$73/$23/$72);   end;
+
+procedure GraphConout (c:char);
+ var x1,x2,y1,y2: integer;
+ begin
+  GraphStatus ($4030,x1,x2,y1,y2); (* Getwindow *)
+  GraphJob ($401e,0,0,639,199); (* SetWindow *)
+  GraphJob ($4012,(WhereX-1)*8,WhereY*8-1,0,0);
+  GraphJob ($401b,ord(c),0,0,0);
+  GraphJob ($401e,x1,y1,x2,y2); (* Altes Window *)
+  GraphStatus ($402d,WhereX,WhereY,x1,x1);
+  WhereX:= succ( succ(WhereX) div 8);     WhereY:= succ(WhereY) div 8;
+ end;
+
+
+procedure TextMode;
+ begin
+  ConOutPtr:= OrgConOut;
+  ErrorPtr:= OrgError;
+  GraphJob ($4003,0,0,0,0);
+ end;
+
+procedure GraphError (nr, adr:integer);
+ begin
+  TextMode; writeln ('Runtime-Error im HiRes-Modus aufgetreten!'); halt
+ end;
+
+procedure HiRes;
+ begin
+  if ConOutPtr=OrgConOut then begin
+   ConOutPtr:= addr(GraphConOut);
+   ErrorPtr:= addr(GraphError);
+  end;
+  WhereX:= 1; WhereY:= 1;
+  GraphJob ($4000,0,0,0,0)
+ end;
+
+procedure HiResColor (Col:integer); begin GraphJob ($4006,col,16,0,0) end;
+
+procedure GraphBackground (Col:integer); begin GraphJob ($4006,16,col,0,0) end;
+
+procedure GraphWindow (x1,y1,x2,y2:integer); begin GraphJob ($401e,x1,y1,x2,y2); end;
+
+procedure Plot (x,y, Colour:integer);
+ begin
+  if Colour=0 then GraphJob ($400C, x,y,0,0)
+  else             GraphJob ($4009, x,y,0,0)
+ end;
+
+procedure Draw (x1,y1,x2,y2, Colour:integer);
+ begin
+  GraphJob ($4012,x1,y1,0,0);
+  if Colour=0 then GraphJob ($400f, x2,y2,0,0)
+  else             GraphJob ($400f, x2,y2,255,0)
+ end;
+
+procedure TextColor (Colour: integer);
+ begin
+  if colour>15 then begin
+   colour:= colour-16;
+   if ConOutPtr=OrgConOut then write (#27,'G2') (* Blinken ein *) end
+  else begin
+   if ConOutPtr=OrgConOut then write (#27,'G0')
+  end;
+  HiResColor (Colour)
+ end;
+
+procedure TextBackGround (Colour: integer);
+ begin
+  GraphBackGround (Colour)
+ end;
+
+procedure GotoXY (x,y: integer);
+ begin
+  if ConOutPtr=OrgConOut then
+   OrgGotoXY (x,y)
+  else begin
+   WhereX:= x;      WhereY:= y
+  end
+ end;
+
+function GetDotColor (x,y: integer): integer;
+ var
+  dum : integer;
+ begin
+  GraphStatus ($4024,x,y,dum,dum);        (* CheckPoint *)
+  GetDotColor:= x
+ end;
+

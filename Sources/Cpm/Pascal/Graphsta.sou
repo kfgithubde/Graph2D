@@ -1,0 +1,42 @@
+; Procedure GraphStatus fuer Graph.bib
+
+jmpfar  equ     0fff1h
+Jmpadr  ext
+par1    ext
+par2    ext
+par3    ext
+par4    ext
+
+        ld      hl,(Par1)
+        ld      e,(hl)
+        inc     hl
+        ld      d,(hl)
+        ld      hl,(par2)
+        ld      c,(hl)
+        inc     hl
+        ld      b,(hl)
+        ld      hl,(JmpAdr)
+
+        call    jmpfar
+
+        ld      hl,(Par1)
+        ld      (hl),e
+        inc     hl
+        ld      (hl),d
+        ld      hl,(Par2)
+        ld      (hl),c
+        inc     hl
+        ld      (hl),b
+        ld      hl,(Par3)
+        push    ix
+        pop     de
+        ld      (hl),e
+        inc     hl
+        ld      (hl),d
+        push    iy
+        pop     de
+        ld      hl,(par4)
+        ld      (hl),e
+        inc     hl
+        ld      (hl),d
+        end

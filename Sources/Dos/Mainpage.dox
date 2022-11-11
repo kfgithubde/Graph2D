@@ -1,0 +1,42 @@
+/*! \mainpage Graph2D / Plot10 & AG II- DOS Port
+\~german
+Graphiktreiber fuer DOS
+
+Die Bibliothek wurde urspruenglich aus der CP/M-Version mit den Microsoft F77Compiler und MASM Assembler entwickelt. 
+Fuer die grundlegenden Graphikfunktionen fand die zu dem MS-Compiler gehoerende graphics.lib Verwendung.
+Mit dem spaeteren Wechsel zu dem freien Open Watcom Compiler/Assembler wurde auch der Graphiktreiber durch den
+Open Watcom Treiber graph.lib ersetzt. Um auch weiterhin die Verwendung des Microsoft Compilers zu ermoeglichen
+erfolgt die Anpassung der graph.lib Aufrufe ausschliesslich durch die Include-Dateien fgraph.fd und fgraph.fi.
+
+Erstellung der Graphikbibliothek: \n
+Nach dem Kopieren der Quelldateien durch Aufruf von "$getfiles.bat DOS" in das /build Unterverzeichnis befinden 
+sich dort auch die Open-Watcom Projektdateien.
+
+Verwendung der Graphikbibliothek: \n
+Nach dem Linken der Graphikbibliothek zu der Anwendung kann das Aussehen durch die folgenden Dateien angepasst werden: \n
+graphlib.fon: Fontfile fuer die Textausgaben \n
+graphlib.lng: Uebersetzte Meldungen des Graphiksystems \n
+
+
+Hardcopies werden als Standard-*.bmp Dateien ausgegeben.
+\~english
+Graphic Driver for DOS
+
+The library was developed with the Microsoft FTN-77 compiler and MASM assembler, basing on the CP/M version.
+In the beginning the basic graphic library graphics.lib was used, which was part of the MS-compiler package.
+Later on the system was ported to the free Open Watcom compiler/assembler and its library graph.lib. 
+In order to keep the ability to use the MS-compiler, the include files fgraph.fd and fgraph.fi adjust the relevant procedure calls to the Watcom-library.
+
+How to build the library: \n
+Copy the sources into the /build subdirectory by invoking "$getfiles.bat DOS" and use the Watcom-Workspace files.
+  
+Using the library: \n
+After building the library and linking it to the applications, the main characteristics could be changed by the following files: \n
+graphlib.fon: Fontfile for the graphic text \n
+graphlib.lng: Translations of the messages \n
+
+
+Hardcopies are generated as standard *.bmp-files.
+
+\~
+*/

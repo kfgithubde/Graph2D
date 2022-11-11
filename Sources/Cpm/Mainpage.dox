@@ -1,0 +1,100 @@
+/*! \mainpage Graph2D - CP/M Port
+\~german
+Graphiktreiber fuer Commodore C128 im CP/M-Modus
+
+Die Bibliothek wurde mit dem Microsoft Fortran IV Compiler und dem CP/M 8080 Assembler RMAC 
+in Verbindung mit den Z80 und 6502 Makros entwickelt.
+Eine detailierte Funktionsbeschreibung befindet sich in /doc/ProgDoc/tekcpm.pdf. \n
+
+
+Erstellung der Programmbibliothek: \n
+Zur Compilierung der Bibliothek muss der C128 mit einer 512 kB Speichererweiterung ausgestattet sein. Der Quelltext aus dem \build Verzeichnis wird auf die RAM-Disk kopiert und dann Tcsbuild.sub ausgefuehrt. Aufgrund des begrenzten Speichers werden die Quelltexte im Laufe des Erstellprozesses von der RAM-Disk geloescht. \n 
+
+
+Die Basistreiber werden vor dem erstmaligem Aufruf eines Graphik-Anwenderprogramms durch das Programm \n
+Graph.asm, Tcsbasi1.asm, Tcsbasi2.asm \n
+in die RAM-Bank 0 kopiert (z.B. waehrend des Bootens). \n 
+
+Alpha.mac schaltet aus dem Graphikmodus in den Textmodus (auch nach Absturz des Anwenderprogramms)
+
+TCS.for, TCSdrCPM.for, Tcsdrivr.asm, Tcsgin.asm, Tcshdc.asm, Tcsital.asm \n
+bilden die Library fuer die Anwenderprogramme
+
+Die erzeugten Hardcopies koennen durch den Spooler \n
+Hdcout.for, Gethdc.asm, Hdcout1.asm, Print.asm \n
+ausgegeben werden. Das Programm ist fuer einen 7-Nadeldrucker geschrieben, Hdcout.for muss bei anderen Druckern entsprechend angepasst werden.
+
+Die Datei Graph.bib implementiert die fehlenden Graphikbefehle des Turbo-Pascal 3.0 Compilers.
+
+
+\file Graph.asm    \brief CP/M: Installationsprogramm der Graphikroutinen in Bank 0  \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+\file Tcsbasi1.asm \brief CP/M Port: Grundgraphik Bank 0 \version 2.2 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsbasi2.asm \brief CP/M Port: Grundgraphik Bank 0 - Unterprogramme \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Alpha.mac    \brief CP/M: CMD-Befehl - alphanumerische Anzeige \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+
+\file "'tktrnx.fd'"\brief TCS: Common Block TKTRNX in TCS.FOR
+\file TCSdrCPM.for \brief CP/M Port: Graphik Grundfunktionen fuer C128 unter CP/M \version (2002,312,1) \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsdrivr.asm \brief CP/M Port: direkte Graphik \version 1.1 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsgin.asm   \brief CP/M Port: Graphic Input \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcshdc.asm   \brief CP/M Port: Hardcopy \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsital.asm  \brief CP/M Port: Kursivschrift \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+
+\file Hdcout.for   \brief CP/M: Druckerspooler fuer 7-Nadeldrucker Seikosha GP100VC \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Gethdc.asm   \brief CP/M Port: Wiedereinlesen von Hardcopyfiles \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Hdcout1.asm  \brief CP/M Port: Lesen VDC-RAM \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+\file Print.asm    \brief CP/M Port: Direkte Druckausgabe \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+
+\file Graph.bib    \brief CP/M Pascal: Implementation der Turbo Pascal 3.0 Graphikroutinen \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Graphjob.sou \brief CP/M Pascal: Quelle des Inlinecodes in Graph.bib \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Graphsta.sou \brief CP/M Pascal: Quelle des Inlinecodes in Graph.bib \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+\~english
+Tektronix Graphic Driver for Commodore 128 running CP/M
+
+The library was developed with the Microsoft Fortran IV compiler and the CP/M 8080 assembler RMAC together with the Z80 and 6502 Macros.
+A detailed description of the system can be found in /doc/ProgDoc/tekcpm.pdf (in German, sorry for that...). \n
+
+
+How to build the library: \n
+In order to compile the library, the Commodore 128 has to be equipped with a 512 kB RAM-disc. Copy the sources from /build to the RAM-disc and execute Tcsbuild.sub. Due to limited disc space, the sources will be erased after compilation. \n 
+
+Using the library: \n
+The basic drivers have to be copied to Bank 0 (e.g. during boot) before calling a graphic application the first time. This is done by \n
+Graph.asm, Tcsbasi1.asm, Tcsbasi2.asm. \n
+
+
+To switch back to alphanumerical mode use Alpha.mac. \n
+
+
+TCS.for, TCSdrCPM.for, Tcsdrivr.asm, Tcsgin.asm, Tcshdc.asm, Tcsital.asm \n
+build the library for the application programs \n
+
+
+Hardcopies could be printed with the help of the spooler \n
+Hdcout.for, Gethdc.asm, Hdcout1.asm, Print.asm \n
+The program is written for a 7 dot matrix printer and has to adopted to the hardware used. \n
+
+
+The file Graph.bib implements the missing graphic support of the Turbo-Pascal 3.0 Compiler.
+
+\file Graph.asm    \brief CP/M: Installer for the Routines in Bank 0  \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsbasi1.asm \brief CP/M Port: Basic Graphic Routines Bank 0 \version 2.2 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsbasi2.asm \brief CP/M Port: Basic Graphic Routines Bank 0 - subprograms \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Alpha.mac    \brief CP/M: shell command - switch to alphanumeric display mode \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+
+\file "'tktrnx.fd'"\brief TCS: Common Block TKTRNX in TCS.FOR
+\file TCSdrCPM.for \brief CP/M Port: Basic graphic subroutines for C128 under CP/M \version (2002,312,1) \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsdrivr.asm \brief CP/M Port: Direct graphic \version 1.1 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsgin.asm   \brief CP/M Port: Graphic input \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcshdc.asm   \brief CP/M Port: Hardcopy \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Tcsital.asm  \brief CP/M Port: Italic \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+
+\file Hdcout.for   \brief CP/M: Printer spooler for 7-dot matrix printer Seikosha GP100VC \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+\file Gethdc.asm   \brief CP/M Port: Read hardcopy file \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Hdcout1.asm  \brief CP/M Port: Read VDC-RAM \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Print.asm    \brief CP/M Port: Direct output to printer \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+
+\file Graph.bib    \brief CP/M Pascal: Implementation of Turbo Pascal 3.0 Graphic routines \version 1.0 \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
+\file Graphjob.sou \brief CP/M Pascal: Source of the inlinecode in Graph.bib \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\file Graphsta.sou \brief CP/M Pascal: Source of the inlinecode in Graph.bib \author (C) 1995 Dr.-Ing. Klaus Friedewald \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3 
+\~
+*/

@@ -1,0 +1,188 @@
+C> \file    Fgraph.fi
+C> \brief   DOS Port: Interface OW graph.lib
+C>
+C> \~german
+C> Interfacedeklaration der Watcom DOS Graphik-Library. Ersatz für das zum
+C> Microsoft Fortran-Compiler gehörende INCLUDE-File, abgeleitet aus dem
+C> Watcom-Headerfile graphapi.fi.
+C>
+C> \~english
+C> Interface definition for the Watcom DOS Graphic Library. Substitutes 
+C> the INCLUDE-file of the Microsoft Fortran Compiler, derived from the
+C> Watcom headerfile graphapi.fi.
+C>
+C> \~
+C> \author  Dr.-Ing. Klaus Friedewald
+C>
+C> \~german
+C> \note
+C> Der Watcom Compiler erlaubt 32 Zeichen lange Variablennamen unter Verwendung
+C> von $ und _. Deswegen sind $notruncate und $notstrict überflüssig.
+C>
+C> \note
+C> Die OpenWatcom Library graph.lib ist nicht Bestandteil von Graph2Ddos.lib
+C> und muss bei den Linkoptionen der Hauptprogramme aufgeführt werden:
+C> -libr graph.
+C> \~english
+C> \note
+C> Watcom-FTN77 variable names are allowed to be 32 characters long and may
+C> contain $ and _. That for $notruncate und $notstrict are superfluous.
+C>
+C> \note
+C> The Watcom library graph.lib ist not included in Graph2Ddos.lib and has to 
+C> be linked to the main programs:
+C> -libr graph.
+C> \~
+C>  
+
+
+c$pragma aux arc "_arc_" parm (VALUE*2)
+
+c$pragma aux arc_w "_arc_w_" parm (VALUE*8)
+
+c$pragma aux clearscreen "_clearscreen_" parm (VALUE*2)
+
+c$pragma aux displaycursor "_displaycursor_" parm (VALUE*2)
+
+c$pragma aux ellipse  "_ellipse_" parm (VALUE*2)
+
+c$pragma aux ellipse_w "_ellipse_w_" parm (VALUE*2, VALUE*8)
+
+c$pragma aux floodfill  "_floodfill_" parm (VALUE*2)
+
+c$pragma aux floodfill_w "_floodfill_w_" parm (VALUE*8, VALUE*8, VALUE*2)
+
+c$pragma aux getactivepage  "_getactivepage_"
+
+c$pragma aux getbkcolor  "_getbkcolor_"
+
+c$pragma aux getcolor "_getcolor_"
+
+c$pragma aux getcurrentposition "_getcurrentposition_" parm (REFERENCE FAR)
+
+c$pragma aux getcurrentposition_w "_getcurrentposition_w_" parm (REFERENCE FAR)
+
+c$pragma aux getfillmask "_getfillmask_" parm (REFERENCE FAR)
+
+c$pragma aux getimage "_getimage_" parm (VALUE*2,VALUE*2,VALUE*2,VALUE*2, \
+c REFERENCE FAR)
+
+c$pragma aux getimage_w "_getimage_w_" parm (VALUE*8,VALUE*8,VALUE*8, \
+c  VALUE*8,REFERENCE FAR)
+
+c$pragma aux  getlinestyle "_getlinestyle_"
+
+c$pragma aux getphyscoord "_getphyscoord_" parm (VALUE*2,VALUE*2, \
+c  REFERENCE FAR)
+
+c$pragma aux getpixel "_getpixel_" parm (VALUE*2)
+
+c$pragma aux getpixel_w "_getpixel_w_" parm (VALUE*8)
+
+c$pragma aux gettextcolor "_gettextcolor_"
+
+c$pragma aux gettextcursor "_gettextcursor_"
+
+c$pragma aux gettextposition "_gettextposition_" parm (REFERENCE FAR)
+
+c$pragma aux getvideoconfig "_getvideoconfig_" parm (REFERENCE FAR)
+
+c$pragma aux getviewcoord "_getviewcoord_" parm (VALUE*2,VALUE*2, \
+c  REFERENCE FAR)
+
+c$pragma aux getviewcoord_w "_getviewcoord_w_" parm (VALUE*8,VALUE*8, \
+c  REFERENCE FAR)
+
+c$pragma aux getvisualpage "_getvisualpage_"
+
+c$pragma aux getwindowcoord "_getwindowcoord_" parm (VALUE*2,VALUE*2, \
+c  REFERENCE FAR)
+
+c$pragma aux imagesize "_imagesize_" parm (VALUE*2)
+
+c$pragma aux imagesize_w "_imagesize_w_" parm (VALUE*8)
+
+c$pragma aux lineto "_lineto_" parm (VALUE*2)
+
+c$pragma aux lineto_w "_lineto_w_" parm (VALUE*8)
+
+c$pragma aux moveto "_moveto_" parm (VALUE*2,VALUE*2,REFERENCE FAR)
+
+c$pragma aux moveto_w "_moveto_w_" parm (VALUE*8,VALUE*8,REFERENCE FAR)
+
+c$pragma aux _outtext "_outtext_" parm (DATA_REFERENCE FAR)
+
+c$pragma aux pie "_pie_" parm (VALUE*2)
+
+c$pragma aux pie_w "_pie_w_" parm (VALUE*2,VALUE*8)
+
+c$pragma aux putimage "_putimage_" parm (VALUE*2,VALUE*2,REFERENCE FAR,VALUE*2)
+
+c$pragma aux putimage_w "_putimage_w_" parm (VALUE*8,VALUE*8, \
+c  REFERENCE FAR,VALUE*2)
+
+c$pragma aux rectangle "_rectangle_" parm (VALUE*2)
+
+c$pragma aux rectangle_w "_rectangle_w_" parm (VALUE*2,VALUE*8)
+
+c$pragma aux remappalette "_remappalette_" parm (VALUE*2,VALUE*4)
+
+c$pragma aux remapallpalette "_remapallpalette_" parm (VALUE*4)
+
+c$pragma aux scrolltextwindow "_scrolltextwindow_" parm (VALUE*2)
+
+c$pragma aux selectpalette "_selectpalette_" parm (VALUE*2)
+
+c$pragma aux setactivepage "_setactivepage_" parm (VALUE*2)
+
+c$pragma aux setbkcolor "_setbkcolor_" parm (VALUE*4)
+
+c$pragma aux setcliprgn "_setcliprgn_" parm (VALUE*2)
+
+c$pragma aux setcolor "_setcolor_" parm (VALUE*2)
+
+c$pragma aux setfillmask "_setfillmask_" parm (REFERENCE FAR)
+
+c$pragma aux setlinestyle "_setlinestyle_" parm (VALUE*2)
+
+c$pragma aux setpixel "_setpixel_" parm (VALUE*2)
+
+c$pragma aux setpixel_w"_setpixel_w_" parm (VALUE*8)
+
+c$pragma aux settextcolor "_settextcolor_" parm (VALUE*2)
+
+c$pragma aux settextcursor "_settextcursor_" parm (VALUE*2)
+
+c$pragma aux settextposition "_settextposition_" parm (VALUE*2,VALUE*2, \
+c  REFERENCE FAR)
+
+c$pragma aux settextrows "_settextrows_" parm (VALUE*2)
+
+c$pragma aux settextwindow "_settextwindow_" parm (VALUE*2)
+
+c$pragma aux setvideomode "_setvideomode_" parm (VALUE*2)
+
+c$pragma aux setvideomoderows "_setvideomoderows_" parm (VALUE*2)
+
+c$pragma aux setvieworg "_setvieworg_" parm (VALUE*2, VALUE*2,REFERENCE FAR)
+
+c$pragma aux setviewport "_setviewport_" parm (VALUE*2)
+
+c$pragma aux setvisualpage "_setvisualpage_" parm (VALUE*2)
+
+c$pragma aux setwindow "_setwindow_" parm (VALUE*2,VALUE*8)
+
+c$pragma aux wrapon "_wrapon_" parm (VALUE*2)
+
+
+c$pragma aux getfontinfo "_getfontinfo_" parm (REFERENCE FAR)
+
+c$pragma aux getgtextextent "_getgtextextent_" parm (DATA_REFERENCE FAR)
+
+c$pragma aux outgtext "_outgtext_" parm (DATA_REFERENCE FAR)
+
+c$pragma aux registerfonts "_registerfonts_" parm (DATA_REFERENCE FAR)
+
+c$pragma aux setfont "_setfont_" parm (DATA_REFERENCE FAR)
+
+c$pragma aux unregisterfonts "_unregisterfonts_"

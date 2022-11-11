@@ -1,0 +1,11 @@
+      COMMON /TKTRNX/
+C      kbaudr,kerror,kgrafl,khomey,kkmode,
+C      khorsz,kversz,kitalc,ksizef,
+     1 klmrgn,krmrgn,
+C      ktblsz,khorzt(10),kvertt(10)
+C      kbeamx,kbeamy,kmovef,kpchar(4),kdasht,
+     4 kminsx,kminsy,kmaxsx,kmaxsy,tminvx,tminvy,tmaxvx,tmaxvy,
+C      trealx,trealy,timagx,timagy,
+     5 trcosf,trsinf,trscal
+     U ,xfac,yfac,xlog,ylog
+

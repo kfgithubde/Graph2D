@@ -1,0 +1,12 @@
+  5,GRAPHLIB %%% INIT: Nationale Fehlermeldungen nicht kompatibel - Tastendruck
+ 10,GRAPHLIB %%% INIT: Unbekannter Graphikadapter
+ 10,GRAPHLIB %%% INIT: Zeichensatz $$ konnte nicht geöffnet werden
+ 10,GRAPHLIB %%% INIT: Unbekannter Zeichensatz $$
+  1,GRAPHLIB %%% INPUT: Kein Maustreiber vorhanden, Tastatureingabe
+  5,GRAPHLIB %%% HARDCOPY: Ausgabefile konnte nicht geöffnet werden
+  5,GRAPHLIB %%% HARDCOPY: Schreibfehler
+  5,GRAPHLIB %%% HARDCOPY: Interner Fehler (buffer overflow)
+  1,$$
+  1,Hardcopy wird erzeugt
+  5,Weiter durch einen beliebigen Tastendruck
+  5,Tastendruck zum Verlassen des Programms

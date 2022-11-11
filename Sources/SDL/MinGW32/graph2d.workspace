@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Graph2D SDL 32bit">
+		<Project filename="graph2d.cbp" />
+		<Project filename="t1.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="T2.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="t3.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="D1.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="D2.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="D3.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="D4.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="D5.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="D6.cbp">
+			<Depends filename="graph2d.cbp" />
+		</Project>
+		<Project filename="ColourDemo.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

@@ -1,0 +1,21 @@
+Projekt -> Optionen -> Dateien -> 
+(in Kompilation einbeziehen, Ins Linken einbeziehen, Überschreibe Build Kommando 
+->
+gfortran -c -xf77 Ag2demo1.for -oObjects/MingW/Ag2demo1.o
+
+Projekt -> Optionen -> Zusätzliche Kommandozeilen Optionen -> Linker 
+->
+Output/MingW/teklib.a
+-static-libgcc
+-static-libgfortran
+-mwindows
+-lgfortran
+libSDL2.a
+libSDL2_ttf.a
+-lfreetype // Notwendig fuer sdl_ttf, zusaetzlich zu MINGW/MSYS hinzugefuegt, s. Anleitung
+-lsetupapi // ab SDL2.0.12 zusaetzlich notwendig
+-lwinmm
+-lole32
+-limm32
+-lversion
+-loleaut32

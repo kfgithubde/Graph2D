@@ -1,0 +1,82 @@
+C> \file    TCSdDosa.fi
+C> \brief   DOS Port: FORTRAN-Interface TCSdDOSa.asm
+C>
+C> \~german
+C> Interfacedeklarationen fuer den Watcom Fortran-Compiler
+C> \~english
+C> Interface definitions for the Watcom Fortran Compiler
+C> \~
+C> \author  Dr.-Ing. Klaus Friedewald
+C> \version 1.32
+C> \date 06.02.2003
+C> \~german
+C> \note 
+C> Assemblerroutinen entsprechend Microsoft Procedure Call Standard
+C>
+C> \note
+C> Watcom Compiler erlaubt 32 Zeichen lange Variablennamen unter Verwendung
+C> von $ und _. Deswegen $notruncate und $notstrict ueberfluessig.
+C>
+C> \note
+C> Hex-Zahlen werden nicht durch \#ff sondern durch \'ff\'x dargestellt
+C> \~english
+C> \note
+C> Assemblerroutines are written according to the Microsoft Procedure Call Standard.
+C> 
+C> \note
+C> Watcom-FTN77 variable names are allowed to be 32 characters long and may
+C> contain $ and _. That for $notruncate und $notstrict are superfluous.
+C>
+C> \note
+C> Hexadecimal numbers are represented by 'ff'x instead of \#ff.
+C> \~
+C> 
+C
+C Interfacedeklarationen fuer den Watcom Fortran-Compiler
+C Assemblerroutinen entsprechend Microsoft Procedure Call Standard
+C
+C
+C   ktinput:    Tastaturabfrage [AX] dos7h
+C   bell:       Signalton [ax,bx] video bios tty out
+C   GinCrsIn:   Initialisierung Graphikmaus [ax,bx,cx,dx] int mouse
+C   GinCrsEX:   Wiederherstellen Graphikmaus [ax] int mouse
+C   GinCrs:     Abfrage Graphikmaus [ax,bx,cx,dx] int mouse
+C
+C   GetEnv:     Abfrage Enviroment (C-Characterformat!)[ax,bx,cx,dx] int dos
+C
+C   Lib_movC3_: Kopieren eines Feldes [ax,bx,cx]
+C
+C   OpenBytFil [ax,bx,cd,dx] dos
+C   WrtBytFil [ax,bx,cd,dx] dos
+C   CloseBytFil [ax,bx]
+C   i.O.: kTinput, bell
+C
+C \cond
+
+c$pragma aux kTinput value [ax] modify exact [ax]
+
+c$pragma aux bell parm [] modify exact [ax bx]
+
+c$pragma aux GetEnv parm reverse (DATA_REFERENCE FAR, REFERENCE FAR) []\
+c  modify exact [ax bx cx dx]
+
+c$pragma aux GinCrsIn parm reverse (REFERENCE FAR, reference far, \
+c  reference far) [] modify exact [ax bx cx dx]
+
+c$pragma aux GinCrs parm reverse (REFERENCE FAR) [] \
+c  modify exact [ax bx cx dx]
+
+c$pragma aux GinCrsEx modify exact [ax]
+
+c$pragma aux lib_movC3_ parm reverse (REFERENCE FAR, DATA_REFERENCE FAR, \
+c  DATA_REFERENCE FAR) [] modify exact [ax bx cx]
+
+c$pragma aux OpenBytFil parm reverse (REFERENCE FAR, REFERENCE FAR, \
+c  DATA_REFERENCE FAR) [] modify exact [ax bx cx dx]
+
+c$pragma aux WrtBytFil parm reverse (REFERENCE FAR, REFERENCE FAR, \
+c  DATA_REFERENCE FAR, REFERENCE FAR) [] modify exact [ax bx cx dx]
+
+c$pragma aux CloseBytFil parm reverse (REFERENCE FAR) [] modify exact [ax bx]
+C
+C \endcond

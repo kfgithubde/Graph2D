@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="D1" />
+		<Option pch_mode="2" />
+		<Option compiler="gfortran" />
+		<Build>
+			<Target title="Release">
+				<Option output="D1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj" />
+				<Option external_deps="libgraph2d.a;" />
+				<Option type="0" />
+				<Option compiler="gfortran" />
+				<Compiler>
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-O3" />
+					<Add option="-static" />
+				</Linker>
+			</Target>
+			<Target title="Debug">
+				<Option output="D1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj" />
+				<Option external_deps="libgraph2d.a;" />
+				<Option type="0" />
+				<Option compiler="gfortran" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Linker>
+			<Add library="./libgraph2d.a" />
+			<Add library="./libmxml.a" />
+		</Linker>
+		<Unit filename="Ag2dem1r.RC">
+			<Option compilerVar="CPP" />
+		</Unit>
+		<Unit filename="Ag2demo1.for">
+			<Option weight="0" />
+		</Unit>
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,61 @@
+       title 'Umschaltung alphanumerische Anzeige und Versionskennung'
+       .comment *
+
+- Aufruf: alpha
+
+Version 1.0: 6.1.94    Dr. K.Friedewald
+       *
+
+       .z80
+TcsTab equ     4000h
+jmpfar equ     0fff1h
+bdos   equ     05h
+PrStr  equ     09h     ; Bdos   9: Print String
+PrChr  equ     2       ; Bdos   2: Console Output
+
+;
+; Umschaltung in den alpahnumerischen Modus
+;
+       ld      hl,Tcstab+3
+       call    JmpFar
+;
+; Holen Version des Graphiktreibers
+;
+       ld      hl,TcsTab+3fh
+       call    Jmpfar
+
+       ld      a,d             ; Version,Release
+       rrca
+       rrca
+       rrca
+       rrca
+       and     0fh             ; Version
+       add     a,'0'           ; ASCII Ziffer
+       ld      (VerSt),a
+       ld      a,d
+       and     0fh             ; Release
+       add     a,'0'
+       ld      (RelSt),a
+
+       ld      hl,OptSt
+       ld      a,e             ; Options
+       ld      c,'+'           ; ASCII gesetzt
+       ld      b,8             ; 8 Bit
+loop:  rlca
+       jr      NC,No
+       ld      (hl),c          ; Bit gesetzt
+No:    inc     hl
+       djnz    loop
+
+       ld      de,Strng        ; Drucken
+       ld      c,PrStr
+       call    bdos
+
+       jp      0
+
+Strng: db      'TCS Version '
+VerSt: db      '0.'
+RelSt: db      '0 - Options ('
+OptSt: db      '........)$'
+
+       end
