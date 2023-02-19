@@ -1,7 +1,7 @@
 /** ****************************************************************************
 \file       TCSdWINc.h
 \brief      MS Windows Port: Low-Level Driver
-\version    1.7
+\version    1.8
 \author     (C) 2022 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
@@ -307,7 +307,9 @@ void finitt (); // ueberpruefen !!!
 #define ERR_XMLPARSER 20
 #define ERR_XMLOPEN 21
 #define ERR_UNKNAUDIO 22
-#define MSG_MAXERRNO 23
+#define MSG_USR2 23
+#define WRN_INI2 24
+#define MSG_MAXERRNO 25
 
 
 
@@ -315,7 +317,8 @@ void finitt (); // ueberpruefen !!!
     Registry und XML-Initialisierung verwendet.
     Bei Erweiterungen Variableninitialisierung szTCSErrorMsg und TCSErrorLev
     in TCSdWINc.c fuer Registry und XML-Initialisierung nicht vergessen und
-    alle Parser (*.ini, Registry und *.xml) beruecksichtigen! */
+    alle Parser (*.ini bei INITT1(), Registry bei StoreIni() und 
+	*.xml bei sax_callback() beruecksichtigen! */
 
 #define TCS_INISECT0 "Graph2D" // Root-Section, derzeit nur bei XML verwendet
 
@@ -378,6 +381,10 @@ void finitt (); // ueberpruefen !!!
     #define TCS_INIDEF_HDCWRT _T("GRAPH2D HARDCOPY: Error during WRITE.")
     #define TCS_INIVAR_HDCWRTL _T("G2dHdcWriteL")
     #define TCS_INIDEF_HDCWRTL 5
+ #define TCS_INIVAR_HDCINT _T("G2dHdcIntern")
+    #define TCS_INIDEF_HDCINT _T("GRAPH2D HARDCOPY: Internal Error.")
+    #define TCS_INIVAR_HDCINTL _T("G2dHdcInternL")
+    #define TCS_INIDEF_HDCINTL 5
  #define TCS_INIVAR_USR _T("G2dUser")
     #define TCS_INIDEF_USR _T("%s")
     #define TCS_INIVAR_USRL _T("G2dUserL")
@@ -430,6 +437,15 @@ void finitt (); // ueberpruefen !!!
     #define TCS_INIDEF_XMLOPEN _T("GRAPH2D Error opening %s")
     #define TCS_INIVAR_XMLOPENL _T("G2dXMLerrorL")
     #define TCS_INIDEF_XMLOPENL 8
+ #define TCS_INIVAR_USR2 _T("G2dUser2")
+    #define TCS_INIDEF_USR2 _T("%s")
+    #define TCS_INIVAR_USR2L _T("G2dUser2L")
+    #define TCS_INIDEF_USR2L 5
+ #define TCS_INIVAR_INI2 _T("G2d2xInitt")
+    #define TCS_INIDEF_INI2 _T("%s")
+    #define TCS_INIVAR_INI2L _T("G2d2xInittL")
+    #define TCS_INIDEF_INI2L 5
+
 
 /* ------------ Steuerung C++: Klassendefinition / C: Unterprogramme ------ */
 

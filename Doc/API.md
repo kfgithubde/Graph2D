@@ -2,10 +2,10 @@
 
 Described here are the extensions of the original AG II library. Port specific details are documented seperately:
 
-* [CP/M](./DoxyGen/HTML/CPMdox-en/index.html)
-* [DOS](./DoxyGen/HTML/DOSdox-en/index.html)
-* [Windows](./DoxyGen/HTML/WINdox-en/index.html)
-* [SDL2 (MinGW and LINUX)](./DoxyGen/HTML/SDLdox-en/index.html)
+* [CP/M](./Doxygen/CPMdox-en.pdf)
+* [DOS](./Doxygen/DOSdox-en.pdf)
+* [Windows](./Doxygen/WINdox-en.pdf)
+* [SDL2 (MinGW and LINUX)](./Doxygen/SDLdox-en.pdf)
 * wX: in development
 
 ### Fortran 77 Charactervariables
@@ -140,6 +140,12 @@ Outputs the multilingual errormessage #iErrNo, completed with String. The messag
 + =8: Output into a modal infowindow
 + =10: Wait for a keystroke and abort program
 + =12: Output into a modal infowindow and abort program. SDL2 additionally writes into the errrorchannel.
+
+<br>
+
+#### GetHDC (Filename)
+
+Plots the the ASCII-Hardcopyfile of Type 3 (Default in SDL and wX).
 
 <br>
 

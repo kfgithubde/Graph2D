@@ -64,6 +64,9 @@
 		<Unit filename="CreateMainWindow.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="GetHDC.for">
+			<Option weight="0" />
+		</Unit>
 		<Unit filename="GetMainInstance.c">
 			<Option compilerVar="CC" />
 		</Unit>

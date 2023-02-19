@@ -1,16 +1,14 @@
 /** ****************************************************************************
 \file    TCSdSDLc.h
 \brief   SDL Port: Low-Level Driver
-\version 1.0
-\author  Dr.-Ing. Klaus Friedewald
+\version 1.1
+\author  (C) 2022 Dr.-Ing. Klaus Friedewald
+\copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
          Headerfile zu TCSdSDLc.c
 \~english
          Headerfile for TCSdSDL.c
 \~
-
-\note
-          Konstantendefinitionen und Steuerung C++ / C
 
 ***************************************************************************** */
 
@@ -180,7 +178,8 @@ void finitt ();
 #define ERR_XMLOPEN 21
 #define ERR_UNKNAUDIO 22
 #define MSG_USR2 23
-#define MSG_MAXERRNO 24
+#define WRN_INI2 24
+#define MSG_MAXERRNO 25
 
 
 
@@ -260,6 +259,10 @@ void finitt ();
     #define TCS_INIDEF_HDCWRT "GRAPH2D HARDCOPY: Error during WRITE."
     #define TCS_INIVAR_HDCWRTL "G2dHdcWriteL"
     #define TCS_INIDEF_HDCWRTL 5
+ #define TCS_INIVAR_HDCINT "G2dHdcIntern"
+    #define TCS_INIDEF_HDCINT "GRAPH2D HARDCOPY: Internal Error."
+    #define TCS_INIVAR_HDCINTL "G2dHdcInternL"
+    #define TCS_INIDEF_HDCINTL 5
  #define TCS_INIVAR_USR "G2dUser"
     #define TCS_INIDEF_USR "%s"
     #define TCS_INIVAR_USRL "G2dUserL"
@@ -320,6 +323,10 @@ void finitt ();
     #define TCS_INIDEF_USR2 "%s"
     #define TCS_INIVAR_USR2L "G2dUser2L"
     #define TCS_INIDEF_USR2L 5
+ #define TCS_INIVAR_INI2 "G2d2xInitt"
+    #define TCS_INIDEF_INI2 "%s"
+    #define TCS_INIVAR_INI2L "G2d2xInittL"
+    #define TCS_INIDEF_INI2L 5
 
 
 /* ------------ Steuerung C++: Klassendefinition / C: Unterprogramme ------ */

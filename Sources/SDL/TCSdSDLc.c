@@ -1,7 +1,7 @@
 /** ****************************************************************************
 \file       TCSdSDLc.c
 \brief      SDL Port: Low-Level Driver
-\version    1.2
+\version    1.3
 \author     (C) 2022 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
@@ -159,7 +159,7 @@ static  ErrMsg  szTCSErrorMsg[(int) MSG_MAXERRNO+1] =
                 "DOS",
                 TCS_INIDEF_HDCOPN,        // Errno 6
                 TCS_INIDEF_HDCWRT,        // Errno 7
-                "DOS",
+                TCS_INIDEF_HDCINT,        // Errno 8
                 TCS_INIDEF_USR,           // Errno 9
                 TCS_INIDEF_HDCACT,        // Errno 10
                 TCS_INIDEF_USRWRN,        // Errno 11
@@ -175,6 +175,7 @@ static  ErrMsg  szTCSErrorMsg[(int) MSG_MAXERRNO+1] =
                 TCS_INIDEF_XMLOPEN,       // Errno 21
                 TCS_INIDEF_UNKNAUDIO,     // Errno 22
                 TCS_INIDEF_USR2,          // Errno 23
+                TCS_INIDEF_INI2,          // Errno 24
                 "Maxerr only for internal Use" };
 
 static  int     TCSErrorLev[(int) MSG_MAXERRNO+1] =
@@ -185,7 +186,7 @@ static  int     TCSErrorLev[(int) MSG_MAXERRNO+1] =
 				10,
                 TCS_INIDEF_HDCOPNL,       // Errno 6
                 TCS_INIDEF_HDCWRTL,       // Errno 7
-                10,
+                TCS_INIDEF_HDCINTL,       // Errno 8
                 TCS_INIDEF_USRL,          // Errno 9
                 TCS_INIDEF_HDCACTL,       // Errno 10
                 TCS_INIDEF_USRWRNL,       // Errno 11
@@ -201,6 +202,7 @@ static  int     TCSErrorLev[(int) MSG_MAXERRNO+1] =
                 TCS_INIDEF_XMLOPENL,      // Errno 21
                 TCS_INIDEF_UNKNAUDIOL,    // Errno 22
                 TCS_INIDEF_USR2L,         // Errno 23
+                TCS_INIDEF_INI2L,         // Errno 24
                 10};
 
 
@@ -470,14 +472,13 @@ char szString [TCS_MESSAGELEN+1];
 
 #if (JOURNALTYP == 3)
  #ifdef TRACE_CALLS
-    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> xTCSJournal: Ptr= %i / Current Entry: Ptr= %i",
-                    xTCSJournal, xJournalEntry);
+    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> xTCSJournal: Ptr= %p", xTCSJournal);
  #endif
     SGLIB_DL_LIST_GET_LAST(struct xJournalEntry_typ, xTCSJournal, previous, next, xJournalEntry)
     while (xJournalEntry != NULL) {
  #ifdef TRACE_CALLS
-     SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> xTCSJournal: Ptr= %i", xTCSJournal);
-     SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> Current Entry: Ptr= %i / previous: Ptr= %i / next: Ptr= %i",
+     SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> xTCSJournal: Ptr= %p", xTCSJournal);
+     SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> Current Entry: Ptr= %p / previous: Ptr= %p / next: Ptr= %p",
                      xJournalEntry, xJournalEntry->previous, xJournalEntry->next);
      SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> XACTION_??? = %i (i1= %i, i2= %i)",
                    xJournalEntry->action, xJournalEntry->i1, xJournalEntry->i2 );
@@ -635,7 +636,7 @@ char szString [TCS_MESSAGELEN+1];
      xJournalEntry= xJournalEntry -> previous;
     }
  #ifdef TRACE_CALLS
-    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> xTCSJournal: Ptr= %i / Last Entry: Ptr= %i", xTCSJournal, xJournalEntry);
+    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> xTCSJournal: Ptr= %p / Last Entry: Ptr= %p", xTCSJournal, xJournalEntry);
  #endif
 
 #endif
@@ -879,6 +880,13 @@ char * StorePtr;
          mxmlElementSetAttr (node,"typ","integer");
          mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[WRN_HDCFILWRT]);
 
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_HDCINT) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","opaque");
+         mxmlElementSetAttrf(node,"store","%p",&szTCSErrorMsg[WRN_HDCINTERN]);
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_HDCINTL) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","integer");
+         mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[WRN_HDCINTERN]);
+
         } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_USR) == 0)  ) {
          mxmlElementSetAttr (node,"typ","opaque");
          mxmlElementSetAttrf(node,"store","%p",&szTCSErrorMsg[MSG_USR]);
@@ -969,6 +977,14 @@ char * StorePtr;
         } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_USR2L) == 0)  ) {
          mxmlElementSetAttr (node,"typ","integer");
          mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[MSG_USR2]);
+
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_INI2) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","opaque");
+         mxmlElementSetAttrf(node,"store","%p",&szTCSErrorMsg[WRN_INI2]);
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_INI2L) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","integer");
+         mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[WRN_INI2]);
+
         }
         break;
        }
@@ -1438,18 +1454,18 @@ SDL_Rect rect;
 
 #if (JOURNALTYP == 3)
     xTCSJournal= NULL;
-    SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> xTCSJournal initialisiert: Ptr= %i", xTCSJournal);
+    SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> xTCSJournal initialisiert: Ptr= %p", xTCSJournal);
 
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUCREATE,"");
-    SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> Nach 1. malloc: xJournalEntry: Ptr= %i", xJournalEntry);
+    SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> Nach 1. malloc: xJournalEntry: Ptr= %p", xJournalEntry);
 
     xJournalEntry->action=  XACTION_NOOP; // Erkennung Listenanfang: Wurzelelement ohne Funktion
     xJournalEntry->i1= 0;
     xJournalEntry->i2= 0;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-    SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> LIST_ADD=Create Journal: xTCSJournal: Ptr= %i / xJournalEntry: Ptr= %i", xTCSJournal, xJournalEntry);
-    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "INITT1> previous: Ptr= %i / next: Ptr= %i", xJournalEntry -> previous, xJournalEntry -> next);
+    SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> LIST_ADD=Create Journal: xTCSJournal: Ptr= %p / xJournalEntry: Ptr= %p", xTCSJournal, xJournalEntry);
+    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "INITT1> previous: Ptr= %p / next: Ptr= %p", xJournalEntry -> previous, xJournalEntry -> next);
 
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
@@ -1457,8 +1473,8 @@ SDL_Rect rect;
     xJournalEntry->i1= 0;
     xJournalEntry->i2= 0;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-    SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> Nach 2. LIST_ADD: xTCSJournal: Ptr= %i / xJournalEntry: Ptr= %i", xTCSJournal, xJournalEntry);
-    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "INITT1> previous: Ptr= %i / next: Ptr= %i", xJournalEntry -> previous, xJournalEntry -> next);
+    SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> Nach 2. LIST_ADD: xTCSJournal: Ptr= %p / xJournalEntry: Ptr= %p", xTCSJournal, xJournalEntry);
+    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "INITT1> previous: Ptr= %p / next: Ptr= %p", xJournalEntry -> previous, xJournalEntry -> next);
 #endif
 
     /*
@@ -1474,6 +1490,11 @@ SDL_Rect rect;
 
 extern void finitt ()
 {
+
+#if (JOURNALTYP == 3)
+  struct xJournalEntry_typ    * xJournalEntry;
+#endif
+
     if (!TCSinitialized) return; /* Graphiksystem nicht initialisiert */
 
     TCSGraphicError (ERR_EXIT,"");
@@ -1581,7 +1602,7 @@ extern void TCSdrWIN__ erase (void)
      xJournalEntry->i2= 0;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ)); // New Plot
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ)); // New Plot
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_ERASE;
      xJournalEntry->i1= 0;
@@ -1603,7 +1624,7 @@ extern void TCSdrWIN__ movabs (FTNINT *ix,FTNINT *iy)
     TKTRNX.kBeamX= *ix; TKTRNX.kBeamY= *iy;
 #if (JOURNALTYP == 3)
     if (PointInWindow (*ix, *iy)) {
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= *ix;
@@ -1632,14 +1653,14 @@ FTNINT iXClip, iYClip, iXClip2, iYClip2;
                                    HiResX(iXClip2),HiResY(TEK_YMAX-iYClip2));
 
 #if (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= iXClip;
      xJournalEntry->i2= iYClip;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_DRWABS;
      xJournalEntry->i1= iXClip2;
@@ -1649,7 +1670,7 @@ FTNINT iXClip, iYClip, iXClip2, iYClip2;
     }
     TKTRNX.kBeamX= *ix; TKTRNX.kBeamY= *iy;
 #if (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action=  XACTION_MOVABS;
     xJournalEntry->i1= *ix;
@@ -1680,21 +1701,21 @@ float xx,yy, dx,dy, dLin,dBlank;
      DrawHiResDashLine (iXClip,iYClip, iXClip2,iYClip2,iMask);
 
 #if (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= iXClip;
      xJournalEntry->i2= iYClip;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_DSHSTYLE;
      xJournalEntry->i1= *iMask;
      xJournalEntry->i2= 0;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_DSHABS;
      xJournalEntry->i1= iXClip2;
@@ -1704,7 +1725,7 @@ float xx,yy, dx,dy, dLin,dBlank;
     }
     TKTRNX.kBeamX= *ix; TKTRNX.kBeamY= *iy;
 #if (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action=  XACTION_MOVABS;
     xJournalEntry->i1= *ix;
@@ -1734,7 +1755,7 @@ extern void TCSdrWIN__ pntabs (FTNINT *ix,FTNINT *iy)
     } else {
      ActPntMov= XACTION_MOVABS;
     }
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= ActPntMov;
     xJournalEntry->i1= *ix;
@@ -1859,7 +1880,7 @@ char outbuf [TCS_MESSAGELEN+1];
     PlotText (outbuf);
 
 #if (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_GTEXT;
      xJournalEntry->i1= (FTNINT) iL;
@@ -1868,7 +1889,7 @@ char outbuf [TCS_MESSAGELEN+1];
 
      i= 1;
      while (i < iL) {
-      xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+      xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
       if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
       xJournalEntry->action=  XACTION_ASCII;
       xJournalEntry->i1= (FTNINT) FTNSTRPARA(ftn_string)[i++];
@@ -1880,7 +1901,7 @@ char outbuf [TCS_MESSAGELEN+1];
       SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
      }
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= TKTRNX.kBeamX;
@@ -1902,7 +1923,7 @@ extern void TCSdrWIN__ italic (void)
     TTF_SetFontStyle(TCSfont, TTF_STYLE_ITALIC);
 
 #if (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
@@ -1923,7 +1944,7 @@ extern void TCSdrWIN__ italir (void)
     TTF_SetFontStyle(TCSfont, TTF_STYLE_NORMAL);
 
 #if (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
@@ -1958,7 +1979,7 @@ int wx,wz;
 	}
 
 	#if (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
@@ -1993,7 +2014,7 @@ int wx, wz;
 	}
 
 #if (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
@@ -2174,8 +2195,8 @@ SDL_RWops*  hFile;
 #if (JOURNALTYP == 3)
     SGLIB_DL_LIST_GET_LAST (struct xJournalEntry_typ, xTCSJournal, previous, next, xJournalEntry)
 #ifdef TRACE_CALLS
-    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> xTCSJournal: Ptr= %i", xTCSJournal);
-    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> 1. Entry: Ptr= %i / previous: Ptr= %i / next: Ptr= %i", xJournalEntry, xJournalEntry -> previous, xJournalEntry -> next);
+    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> xTCSJournal: Ptr= %p", xTCSJournal);
+    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> 1. Entry: Ptr= %p / previous: Ptr= %p / next: Ptr= %p", xJournalEntry, xJournalEntry -> previous, xJournalEntry -> next);
 #endif
     while (xJournalEntry != NULL) {
      snprintf( szTmpString,TCS_FILE_NAMELEN, "%02i#%04i-%03i\n", xJournalEntry->action, xJournalEntry->i1, xJournalEntry->i2 );
@@ -2252,8 +2273,8 @@ SDL_RWops*  hFile;
 
    SDL_RWclose (hFile);
 #ifdef TRACE_CALLS
-   SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> xTCSJournal New Current Entry: Ptr= %i", xJournalEntry);
-   SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> Previous: Ptr= %i  Next: Ptr= %i", xJournalEntry->previous, xJournalEntry->next);
+   SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> xTCSJournal New Current Entry: Ptr= %p", xJournalEntry);
+   SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> Previous: Ptr= %p  Next: Ptr= %p", xJournalEntry->previous, xJournalEntry->next);
 #endif // TRACE_CALLS
 
 

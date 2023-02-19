@@ -30,5 +30,6 @@
 			<Depends filename="Graph2D.cbp" />
 		</Project>
 		<Project filename="ColourDemo.cbp" />
+		<Project filename="PlotHDC.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

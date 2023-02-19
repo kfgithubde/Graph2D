@@ -4,7 +4,7 @@ Graph2D is a software library for generating scientific 2-D plots. The API is ba
 
 ## Screenshots
 
-You can view screenshots of the application at [*Graph2D's* project page].
+You can view screenshots of the application [here](./Doc/Screenshots).
 
 ## Documentation
 
@@ -15,11 +15,11 @@ The historic Tektronix manuals contain a complete documentation of the basic API
 * [Advanced Graphing II User Manual](https://archive.org/details/bitsavers_tektronixp0AdvancedGraphingIIUsersManualFeb82_5136332)
 * [Advanced Graphing II System Manual](https://archive.org/details/bitsavers_tektronixp02PLOT10AdvancedGraphingIISystemManual19_7978638)
 
-The additional subroutines dealing with windows, colors, hardcopies etc. are described [here](./Doc/api.md). 
+The additional subroutines dealing with windows, colors, hardcopies etc. are described [here](./Doc/API.md). 
 
 ## Installation
 
-In the /Binaries subdirectory are ready compiled libraries, together with examples for initialization and font files. You also find there executables of some demonstration programs, as decribed in the manuals.
+Inside the /Binaries subdirectory are ready compiled libraries, together with examples for initialization and font files. You also find there executables of some demonstration programs, as decribed in the manuals.
 
 ## Build
 

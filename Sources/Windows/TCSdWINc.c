@@ -1,7 +1,7 @@
 /** ****************************************************************************
 \file       TCSdWINc.c
 \brief      MS Windows Port: Low-Level Driver
-\version    1.95
+\version    1.96
 \author     (C) 2022 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
@@ -202,9 +202,9 @@
              sind hiervon nicht betroffen.
          20. XML-Dateien verwenden i.d.R. UTF-8 Codierungen, deswegen erfolgt
              bei _UNICODE keine Einbindung des XML-Parsers.
-         21. Die verwendete Listenbibliothek verträgt sich nicht mit den Makros
-             LoRes und HiRes. Deswegen darf bei Journaltyp 3 pixfac nicht
-             definiert werden.
+         21. Journalfile Typ 3: Die verwendete Listenbibliothek verträgt sich
+             nicht mit den Makros LoRes und HiRes. Deswegen darf dann PixFac
+             nicht definiert werden.
 
 */
 
@@ -222,7 +222,7 @@
 // #define REGSUPPORT                // s. Kommentar 18
 // #define XMLSUPPORT                // s. Kommentar 18
 // #define INIFILEXT _TEXT(".XML")   // s. Kommentar 18
-// #define JOURNALTYP 3              // s. Kommentar 2
+// #define JOURNALTYP 3              // s. Kommentar 2, 21
 
 #if !defined(JOURNALTYP) // Defaultwerte, falls nicht oben definiert
  #if !defined(__WIN32__) && !defined(_WIN32)
@@ -252,6 +252,10 @@
    #undef XMLSUPPORT
   #endif
  #endif
+#endif
+
+#if (JOURNALTYP == 3)
+ #undef PixFac                   // s. Kommentar 21
 #endif
 
 #if defined(UNICODE) || defined(_UNICODE)
@@ -439,7 +443,7 @@ static  ErrMsg  szTCSErrorMsg[(int) MSG_MAXERRNO+1] =
                  _T("DOS"),_T("DOS"),   // Errno 0..5
                 TCS_INIDEF_HDCOPN,      // Errno 6
                 TCS_INIDEF_HDCWRT,      // Errno 7
-                _T("DOS"),
+                TCS_INIDEF_HDCINT,      // Errno 8
                 TCS_INIDEF_USR,         // Errno 9
                 TCS_INIDEF_HDCACT,      // Errno 10
                 TCS_INIDEF_USRWRN,      // Errno 11
@@ -454,13 +458,15 @@ static  ErrMsg  szTCSErrorMsg[(int) MSG_MAXERRNO+1] =
                 TCS_INIDEF_XMLPARSER,   // Errno 20
                 TCS_INIDEF_XMLOPEN,     // Errno 21
                 _T("SDL"),
+                TCS_INIDEF_USR2,        // Errno 23
+                TCS_INIDEF_INI2,        // Errno 24
                 _T("Maxerr only for internal Use") };
 
 static  int     TCSErrorLev[(int) MSG_MAXERRNO+1] =
                 {10,10,10,10,10,10,
                 TCS_INIDEF_HDCOPNL,     // Errno 6
                 TCS_INIDEF_HDCWRTL,     // Errno 7
-                10,
+                TCS_INIDEF_HDCINTL,     // Errno 8
                 TCS_INIDEF_USRL,        // Errno 9
                 TCS_INIDEF_HDCACTL,     // Errno 10
                 TCS_INIDEF_USRWRNL,     // Errno 11
@@ -474,9 +480,11 @@ static  int     TCSErrorLev[(int) MSG_MAXERRNO+1] =
                 TCS_INIDEF_JOUUNKWNL,   // Errno 19
                 TCS_INIDEF_XMLPARSERL,  // Errno 20
                 TCS_INIDEF_XMLOPENL,    // Errno 21
-                10,10};
+                10,
+                TCS_INIDEF_USR2L,       // Errno 23
+                TCS_INIDEF_INI2L,       // Errno 24
+				10};
 
-;
 
 
 /* Zuordnung der Linienarten zu Liniennummern */
@@ -634,6 +642,11 @@ FTNSTRDESC  ftnstrg;
      } else if (_tcsicmp (szField,TCS_INIVAR_HDCWRTL) == 0 ) {
       TCSErrorLev[WRN_HDCFILWRT]= * (int*) szValue;
 
+     } else if (_tcsicmp (szField,TCS_INIVAR_HDCINT) == 0 ) {
+      _tcsncpy(szTCSErrorMsg[WRN_HDCINTERN], szValue,STAT_MAXCOLUMNS-1);
+     } else if (_tcsicmp (szField,TCS_INIVAR_HDCINTL) == 0 ) {
+      TCSErrorLev[WRN_HDCINTERN]= * (int*) szValue;
+
      } else if (_tcsicmp (szField,TCS_INIVAR_USR) == 0 ) {
       _tcsncpy(szTCSErrorMsg[MSG_USR], szValue,STAT_MAXCOLUMNS-1);
      } else if (_tcsicmp (szField,TCS_INIVAR_USRL) == 0 ) {
@@ -688,6 +701,27 @@ FTNSTRDESC  ftnstrg;
       _tcsncpy(szTCSErrorMsg[WRN_JOUUNKWN], szValue,STAT_MAXCOLUMNS-1);
      } else if (_tcsicmp (szField,TCS_INIVAR_JOUUNKWNL) == 0 ) {
       TCSErrorLev[WRN_JOUUNKWN]= * (int*) szValue;
+ 
+     } else if (_tcsicmp (szField,TCS_INIVAR_XMLPARSER) == 0 ) {
+      _tcsncpy(szTCSErrorMsg[ERR_XMLPARSER], szValue,STAT_MAXCOLUMNS-1);
+     } else if (_tcsicmp (szField,TCS_INIVAR_XMLPARSERL) == 0 ) {
+      TCSErrorLev[ERR_XMLPARSER]= * (int*) szValue;
+
+     } else if (_tcsicmp (szField,ERR_XMLOPEN) == 0 ) {
+      _tcsncpy(szTCSErrorMsg[ERR_XMLOPEN], szValue,STAT_MAXCOLUMNS-1);
+     } else if (_tcsicmp (szField,TCS_INIVAR_XMLOPENL) == 0 ) {
+      TCSErrorLev[ERR_XMLOPEN]= * (int*) szValue;
+
+     } else if (_tcsicmp (szField,TCS_INIVAR_USR2) == 0 ) {
+      _tcsncpy(szTCSErrorMsg[MSG_USR2], szValue,STAT_MAXCOLUMNS-1);
+     } else if (_tcsicmp (szField,TCS_INIVAR_USR2L) == 0 ) {
+      TCSErrorLev[MSG_USR2]= * (int*) szValue;
+
+     } else if (_tcsicmp (szField,TCS_INIVAR_INI2) == 0 ) {
+      _tcsncpy(szTCSErrorMsg[WRN_INI2], szValue,STAT_MAXCOLUMNS-1);
+     } else if (_tcsicmp (szField,TCS_INIVAR_INI2L) == 0 ) {
+      TCSErrorLev[WRN_INI2]= * (int*) szValue;
+
      }
 
     } // End case section
@@ -889,6 +923,13 @@ char * StorePtr;
          mxmlElementSetAttr (node,"typ","integer");
          mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[WRN_HDCFILWRT]);
 
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_HDCINT) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","opaque");
+         mxmlElementSetAttrf(node,"store","%p",&szTCSErrorMsg[WRN_HDCINTERN]);
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_HDCINTL) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","integer");
+         mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[WRN_HDCINTERN]);
+
         } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_USR) == 0)  ) {
          mxmlElementSetAttr (node,"typ","opaque");
          mxmlElementSetAttrf(node,"store","%p",&szTCSErrorMsg[MSG_USR]);
@@ -979,6 +1020,21 @@ char * StorePtr;
         } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_XMLOPENL) == 0)  ) {
          mxmlElementSetAttr (node,"typ","integer");
          mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[ERR_XMLOPEN]);
+
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_USR2) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","opaque");
+         mxmlElementSetAttrf(node,"store","%p",&szTCSErrorMsg[MSG_USR2]);
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_USR2L) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","integer");
+         mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[MSG_USR2]);
+
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_INI2) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","opaque");
+         mxmlElementSetAttrf(node,"store","%p",&szTCSErrorMsg[WRN_INI2]);
+        } else if ((strcmp(mxmlGetElement(node),TCS_INIVAR_INI2L) == 0)  ) {
+         mxmlElementSetAttr (node,"typ","integer");
+         mxmlElementSetAttrf(node,"store","%p",&TCSErrorLev[WRN_INI2]);
+
         }
         break;
        }
@@ -1959,7 +2015,7 @@ TEXTMETRIC  lpTM;
  RECT   screenrect;
  int iWidthMM, iHeightMM, iWidthPixel, iHeightPixel;
 #elif (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
+ struct xJournalEntry_typ * xJournalEntry;
 #endif
 
 
@@ -2084,6 +2140,11 @@ TEXTMETRIC  lpTM;
      TCSErrorLev[WRN_HDCFILWRT]= GetPrivateProfileInt (TCS_INISECT3,
                      TCS_INIVAR_HDCWRTL,TCS_INIDEF_HDCWRTL, szTCSIniFile);
 
+     GetPrivateProfileString (TCS_INISECT3,TCS_INIVAR_HDCINT,TCS_INIDEF_HDCINT,
+                  szTCSErrorMsg[WRN_HDCINTERN], STAT_MAXCOLUMNS, szTCSIniFile);
+     TCSErrorLev[WRN_HDCFILWRT]= GetPrivateProfileInt (TCS_INISECT3,
+                     TCS_INIVAR_HDCINTL,TCS_INIDEF_HDCINTL, szTCSIniFile);
+
      GetPrivateProfileString (TCS_INISECT3, TCS_INIVAR_USR,TCS_INIDEF_USR,
                      szTCSErrorMsg[MSG_USR], STAT_MAXCOLUMNS, szTCSIniFile);
      TCSErrorLev[MSG_USR]= GetPrivateProfileInt (TCS_INISECT3, TCS_INIVAR_USRL,
@@ -2138,6 +2199,27 @@ TEXTMETRIC  lpTM;
                    szTCSErrorMsg[WRN_JOUUNKWN], STAT_MAXCOLUMNS, szTCSIniFile);
      TCSErrorLev[WRN_JOUUNKWN]= GetPrivateProfileInt (TCS_INISECT3,
                      TCS_INIVAR_JOUUNKWNL,TCS_INIDEF_JOUUNKWNL, szTCSIniFile);
+
+
+     GetPrivateProfileString (TCS_INISECT3,TCS_INIVAR_XMLPARSER,TCS_INIDEF_XMLPARSER,
+                   szTCSErrorMsg[ERR_XMLPARSER], STAT_MAXCOLUMNS, szTCSIniFile);
+     TCSErrorLev[WRN_JOUUNKWN]= GetPrivateProfileInt (TCS_INISECT3,
+                     TCS_INIVAR_XMLPARSERL,TCS_INIDEF_XMLPARSERL, szTCSIniFile);
+
+     GetPrivateProfileString (TCS_INISECT3,TCS_INIVAR_XMLOPEN,TCS_INIDEF_XMLOPEN,
+                   szTCSErrorMsg[ERR_XMLOPEN], STAT_MAXCOLUMNS, szTCSIniFile);
+     TCSErrorLev[WRN_JOUUNKWN]= GetPrivateProfileInt (TCS_INISECT3,
+                     TCS_INIVAR_XMLOPENL,TCS_INIDEF_XMLOPENL, szTCSIniFile);
+
+     GetPrivateProfileString (TCS_INISECT3,TCS_INIVAR_USR2,TCS_INIDEF_USR2,
+                   szTCSErrorMsg[MSG_USR2], STAT_MAXCOLUMNS, szTCSIniFile);
+     TCSErrorLev[WRN_JOUUNKWN]= GetPrivateProfileInt (TCS_INISECT3,
+                     TCS_INIVAR_USR2L,TCS_INIDEF_USR2L, szTCSIniFile);
+
+     GetPrivateProfileString (TCS_INISECT3,TCS_INIVAR_INI2,TCS_INIDEF_INI2,
+                   szTCSErrorMsg[WRN_INI2], STAT_MAXCOLUMNS, szTCSIniFile);
+     TCSErrorLev[WRN_JOUUNKWN]= GetPrivateProfileInt (TCS_INISECT3,
+                     TCS_INIVAR_INI2L,TCS_INIDEF_INI2L, szTCSIniFile);
 
     } // endif Initialisierung ueber *.ini
 
@@ -2370,7 +2452,7 @@ TEXTMETRIC  lpTM;
     xJournalEntry->i2= 0;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, hTCSJournal, xJournalEntry, previous, next)
 
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
     xJournalEntry->action=  XACTION_INITT;
     xJournalEntry->i1= 0;
@@ -2496,6 +2578,8 @@ extern void TCSdrWIN__ finitt ()
  HMETAFILE hmf;
 #elif (JOURNALTYP == 2)
  HENHMETAFILE hmf;
+#elif (JOURNALTYP == 3)
+ struct xJournalEntry_typ * xJournalEntry;
 #endif
 
 
@@ -2641,7 +2725,7 @@ extern void TCSdrWIN__ erase (void)
            xJournalEntry,previous,next, {free (xJournalEntry);}); // free all
      hTCSJournal= NULL;
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_NOOP;
      xJournalEntry->i1= 0;
@@ -2669,7 +2753,7 @@ extern void TCSdrWIN__ erase (void)
      xJournalEntry->i2= 0;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, hTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_ERASE;
      xJournalEntry->i1= 0;
@@ -2716,7 +2800,7 @@ int ixx, iyy; /* Erzwingt Typangleichung Windows-GDI / Fortran */
 #if ((JOURNALTYP == 1) || (JOURNALTYP == 2))
      MoveToEx (hTCSMetaFileDC, ixx, iyy, NULL);
 #elif (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= *ix;
@@ -2743,7 +2827,7 @@ int ixx, iyy;
 #if ((JOURNALTYP == 1) || (JOURNALTYP == 2))
      MoveToEx (hTCSMetaFileDC, ixx,iyy, NULL);
 #elif (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= iXClip;
@@ -2760,14 +2844,14 @@ int ixx, iyy;
      LineTo (hTCSMetaFileDC, ixx,iyy);
      SetPixel (hTCSMetaFileDC,ixx,iyy, dwColorTable[TKTRNX.iLinCol]);
 #elif (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_DRWABS;
      xJournalEntry->i1= iXClip;
      xJournalEntry->i2= iYClip;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, hTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= *ix;
@@ -2807,7 +2891,7 @@ int     iMaskIndex, ixx, iyy;
 #if ((JOURNALTYP == 1) || (JOURNALTYP == 2))
      MoveToEx (hTCSMetaFileDC, ixx,iyy, NULL);
 #elif (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= iXClip;
@@ -2844,20 +2928,20 @@ int     iMaskIndex, ixx, iyy;
       SelectObject (hTCSMetaFileDC, hTCSPen); // 32bit: GDI Standardaufruf
      #endif
 #elif (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_DSHSTYLE;
      xJournalEntry->i1= iMaskIndex;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, hTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_DSHABS;
      xJournalEntry->i1= iXClip;
      xJournalEntry->i2= iYClip;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, hTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= *ix;
@@ -2893,7 +2977,7 @@ int     ixx, iyy; /* Erzwingt Typangleichung Windows-GDI / Fortran */
 #if ((JOURNALTYP == 1) || (JOURNALTYP == 2))
      SetPixel (hTCSMetaFileDC,ixx,iyy,dwColorTable[TKTRNX.iLinCol]);
 #elif (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_PNTABS;
      xJournalEntry->i1= *ix;
@@ -2916,7 +3000,7 @@ extern void TCSdrWIN__ bckcol (FTNINT *iCol)
     TKTRNX.iBckCol= min(abs(*iCol),MAX_COLOR_INDEX);
 
 #if (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
     xJournalEntry->action=  XACTION_BCKCOL;
     xJournalEntry->i1= TKTRNX.iBckCol;
@@ -2951,7 +3035,7 @@ HPEN    hPenOld;
      SelectObject (hTCSMetaFileDC, hTCSPen); // 32bit: GDI Standardaufruf
     #endif
 #elif (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
     xJournalEntry->action=  XACTION_LINCOL;
     xJournalEntry->i1= TKTRNX.iLinCol;
@@ -2981,7 +3065,7 @@ extern void TCSdrWIN__ txtcol (FTNINT *iCol)
 #if ((JOURNALTYP == 1) || (JOURNALTYP == 2))
     SetTextColor (hTCSMetaFileDC, dwColorTable[TKTRNX.iTxtCol]);
 #elif (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
     xJournalEntry->action=  XACTION_TXTCOL;
     xJournalEntry->i1= TKTRNX.iTxtCol;
@@ -3078,14 +3162,14 @@ POINT CPpos;
      MoveToEx (hTCSMetaFileDC,HiRes(TKTRNX.kBeamX),HiRes(TKTRNX.kBeamY),NULL);
      TextOut (hTCSMetaFileDC, 0,0, FTNSTRPARA(ftn_string), iL);
 #elif (JOURNALTYP == 3)
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUENTRY,"");
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= TKTRNX.kBeamX;
      xJournalEntry->i2= TKTRNX.kBeamY;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, hTCSJournal, xJournalEntry, previous, next)
 
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      xJournalEntry->action=  XACTION_GTEXT;
      xJournalEntry->i1= (FTNINT) iL;
      xJournalEntry->i2= (FTNINT) FTNSTRPARA(ftn_string)[0];
@@ -3093,7 +3177,7 @@ POINT CPpos;
 
      i= 1;
      while (i < iL) {
-      xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+      xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
       xJournalEntry->action=  XACTION_ASCII;
       xJournalEntry->i1= (FTNINT) FTNSTRPARA(ftn_string)[i++];
       if ( i<iL ) xJournalEntry->i2= (FTNINT) FTNSTRPARA(ftn_string)[i++];
@@ -3105,7 +3189,7 @@ POINT CPpos;
      TKTRNX.kBeamX= LoRes(CPpos.x); TKTRNX.kBeamY= LoRes(CPpos.y);
 
 #if (JOURNALTYP == 3) // Bei Metafiles ist auch nach Neuskalierung CP i.O.
-     xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      xJournalEntry->action=  XACTION_MOVABS;
      xJournalEntry->i1= TKTRNX.kBeamX;
      xJournalEntry->i2= TKTRNX.kBeamY;
@@ -3140,7 +3224,7 @@ HFONT   hOldFont;
      SelectObject (hTCSMetaFileDC, hTCSFont);
     #endif
 #elif (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
     xJournalEntry->i2= TKTRNX.ksizef;
@@ -3178,7 +3262,7 @@ HFONT   hOldFont;
      SelectObject (hTCSMetaFileDC, hTCSFont);
     #endif
 #elif (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
     xJournalEntry->i2= TKTRNX.ksizef;
@@ -3218,7 +3302,7 @@ HFONT   hOldFont;
      SelectObject (hTCSMetaFileDC, hTCSFont);
     #endif
 #elif (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
     xJournalEntry->i2= TKTRNX.ksizef;
@@ -3258,7 +3342,7 @@ HFONT   hOldFont;
      SelectObject (hTCSMetaFileDC, hTCSFont);
     #endif
 #elif (JOURNALTYP == 3)
-    xJournalEntry= malloc (sizeof (struct xJournalEntry_typ));
+    xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
     xJournalEntry->i2= TKTRNX.ksizef;

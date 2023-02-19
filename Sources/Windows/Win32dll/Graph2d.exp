@@ -208,4 +208,6 @@
     EXPOUTC,
     ALFSETC,
     NOTATEC,
-    JUSTERC
+    JUSTERC,
+	
+	GETHDC

@@ -1,6 +1,6 @@
 /*
 
-  This is SGLIB version 1.0.4 with Bugfix #9
+  This is SGLIB version 1.0.4 with Bugfix #9 von basetutu ohne ganwell
 
   (C) by Marian Vittek, Bratislava, http://www.xref-tech.com/sglib, 2003-5
 
@@ -558,7 +558,6 @@
 
 #define SGLIB_DL_LIST_ADD(type, list, elem, previous, next) {\
   SGLIB_DL_LIST_ADD_BEFORE(type, list, elem, previous, next)\
-  (list) = (elem);\
 }
 
 #define SGLIB___DL_LIST_GENERIC_ADD_IF_NOT_MEMBER(type, list, elem, comparator, previous, next, member, the_add_operation) {\
