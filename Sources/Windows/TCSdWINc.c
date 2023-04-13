@@ -1,25 +1,13 @@
 /** ****************************************************************************
 \file       TCSdWINc.c
 \brief      MS Windows Port: Low-Level Driver
-\version    1.96
-\author     (C) 2022 Dr.-Ing. Klaus Friedewald
+\version    1.97
+\author     (C) 2023 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
          Systemnahe Graphikroutinen für das Tektronix Graphiksystem
-\note \verbatim
-  TCSdWINc.c    : In C programmierte Routinen
-
-  TCSdrWIN.cpp  : Implementierung der Klasse TCSdrWIN.
-                  Das File ist identisch mit TCSdrWIN.c.
-\endverbatim
 \~english
          system-specific subroutines of the teklib-library
-\note \verbatim
-  TCSdWINc.c    : Routines programmed in C.
-
-  TCSdrWIN.cpp  : Implementation of class TCSdrWIN.
-                  The file is identical to TCSdrWIN.c
- \endverbatim
 \~
 ***************************************************************************** */
 
@@ -543,7 +531,7 @@ FTNSTRDESC  ftnstrg;
      UpdateWindow (hTCSWindow); /* Notwendig bei OnPaint mit Journaltyp=3 */
      bell (); // -> MessgageBeep / winuser.h, ohne Initialisierung verwendbar
      ftnstrg.addr= cBuf; ftnstrg.len= strlen (cBuf);
-     TCSdrWIN__ outtext (CALLFTNSTRA(ftnstrg) CALLFTNSTRL(ftnstrg));
+     outtext (CALLFTNSTRA(ftnstrg) CALLFTNSTRL(ftnstrg));
      if (TCSErrorLev[iErr] >1) {
       if (TCSErrorLev[iErr] < 10) {
        if (TCSErrorLev[iErr] == 5) {
@@ -701,7 +689,7 @@ FTNSTRDESC  ftnstrg;
       _tcsncpy(szTCSErrorMsg[WRN_JOUUNKWN], szValue,STAT_MAXCOLUMNS-1);
      } else if (_tcsicmp (szField,TCS_INIVAR_JOUUNKWNL) == 0 ) {
       TCSErrorLev[WRN_JOUUNKWN]= * (int*) szValue;
- 
+
      } else if (_tcsicmp (szField,TCS_INIVAR_XMLPARSER) == 0 ) {
       _tcsncpy(szTCSErrorMsg[ERR_XMLPARSER], szValue,STAT_MAXCOLUMNS-1);
      } else if (_tcsicmp (szField,TCS_INIVAR_XMLPARSERL) == 0 ) {
@@ -1442,9 +1430,7 @@ bool TCSWndProc_OnCopyClipboard ()
     hGlobalMem= GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, sizeof(METAFILEPICT));
     if (hGlobalMem == NULL) {
      iErr= WRN_COPYNOMEM;
-     #ifndef __cplusplus
-      TCSGraphicError (iErr,"");
-     #endif
+     TCSGraphicError (iErr,"");
      return false;                      /* Error: OutOfMemory -> ret */
     }
     lpMfp= (LPMETAFILEPICT) GlobalLock (hGlobalMem);
@@ -1479,9 +1465,7 @@ bool TCSWndProc_OnCopyClipboard ()
     if (!OpenClipboard (hTCSWindow)) {          /* Error: Clipboard locked */
      GlobalFree (hGlobalMem);
      iErr= WRN_COPYLOCK;
-     #ifndef __cplusplus
-      TCSGraphicError (iErr,"");
-     #endif
+     TCSGraphicError (iErr,"");
      return false;
     }
     EmptyClipboard ();
@@ -1493,9 +1477,7 @@ bool TCSWndProc_OnCopyClipboard ()
     hmf1 = CopyEnhMetaFile (hmf, NULL) ;
     if (!OpenClipboard (hTCSWindow)) {          /* Error: Clipboard locked */
      iErr= WRN_COPYLOCK;
-     #ifndef __cplusplus
-      TCSGraphicError (iErr,"");
-     #endif
+     TCSGraphicError (iErr,"");
      return false;
     }
     EmptyClipboard () ;
@@ -1687,42 +1669,13 @@ LRESULT CALLBACK EXPORT16 TCSstatWndProc(HWND hWindow, UINT Message,
 
 
 
-
-/*
---------------- Konstruktion/Destruktion fuer C++ ----------------------
-*/
-
-#ifdef __cplusplus
-
-TCSdrWIN__ TCSdrWIN()
-{
-        #ifdef trace_calls
-         MessageBox(0, "Constructor", "TCSdrWIN", MB_OK | MB_ICONINFORMATION);
-        #endif
-        // initt; // Doppelaufruf Userroutine. Vorsicht WINLBL nach INITT!
-}
-
-
-
-TCSdrWIN__ ~TCSdrWIN()
-{
-        #if defined trace_calls
-         MessageBox(0, "Destructor", "TCSdrWIN", MB_OK | MB_ICONINFORMATION);
-        #endif
-        // finitt; // Userroutine, Aufruf unbedingt notwendig!
-}
-
-#endif /* cplusplus */
-
-
-
 /*
 ---------------------- Userroutinen: Initialisierung -------------------
 */
 
 
 
-extern void TCSdrWIN__ tcslev3 (FTNINT *SysLev)
+extern void tcslev3 (FTNINT *SysLev)
 
 {
     *SysLev= TCSLEV3SYS;
@@ -1879,7 +1832,7 @@ n.len= TMPSTRLEN;
 
 
 
-extern void TCSdrWIN__ winlbl (FTNSTRPAR * PloWinNam, FTNSTRPAR * StatWinNam,
+extern void winlbl (FTNSTRPAR * PloWinNam, FTNSTRPAR * StatWinNam,
                                             FTNSTRPAR *IniFilNam
                                             FTNSTRPAR_TAIL(PloWinNam)
                                             FTNSTRPAR_TAIL(StatWinNam)
@@ -1986,7 +1939,7 @@ FTNSTRDESC  o, n, ftn_WorkString;
 
 
 
-extern void TCSdrWIN__ initt1 (HINSTANCE *hParentInstance, HWND *hParentWindow)
+extern void initt1 (HINSTANCE *hParentInstance, HWND *hParentWindow)
 {
 int         nCmdShow, iX,iY, iSizeX, iSizeY;
 DWORD       FirstShow;
@@ -2555,13 +2508,6 @@ TEXTMETRIC  lpTM;
     SetScrollRange (hTCSstatWindow, SB_VERT, 0,STAT_MAXROWS-1, true);
     SetScrollPos (hTCSstatWindow, SB_VERT, TCSstatScrollY, true);
 
-    #ifdef __cplusplus /* Im Komplettpaket durch TCS.FOR in INITT gesetzt */
-     TKTRNX.kminsx= 0;
-     TKTRNX.kmaxsx= TEK_XMAX;
-     TKTRNX.kminsy= 0;
-     TKTRNX.kmaxsy= TEK_YMAX;
-    #endif
-
     ShowWindow (hTCSstatWindow, SW_HIDE);
 
     ClippingNotActive= true;
@@ -2571,7 +2517,7 @@ TEXTMETRIC  lpTM;
 
 
 
-extern void TCSdrWIN__ finitt ()
+extern void finitt ()
 {
 // FTNINT iErr;
 #if (JOURNALTYP == 1)
@@ -2637,7 +2583,7 @@ extern void TCSdrWIN__ finitt ()
 
 
 
-extern void TCSdrWIN__ swind1 (FTNINT *ix1,FTNINT *iy1,FTNINT *ix2,FTNINT *iy2)
+extern void swind1 (FTNINT *ix1,FTNINT *iy1,FTNINT *ix2,FTNINT *iy2)
 {
     ClippingNotActive = (*ix1==0) && (*iy1==0) &&
                                         (*ix2==TEK_XMAX) && (*iy2==TEK_YMAX);
@@ -2646,7 +2592,7 @@ extern void TCSdrWIN__ swind1 (FTNINT *ix1,FTNINT *iy1,FTNINT *ix2,FTNINT *iy2)
 
 
 
-extern void TCSdrWIN__ erase (void)
+extern void erase (void)
 {
 #if (JOURNALTYP == 1)
  HMETAFILE hmf;
@@ -2770,21 +2716,7 @@ extern void TCSdrWIN__ erase (void)
 
 
 
-#ifdef __cplusplus /* Erweiterte Version in TCS.FOR, nur C++ Version */
-
-extern TCSdrWIN__ swindo (FTNINT *ix,FTNINT *iLx, FTNINT *iy,FTNINT *iLy)
-{
-    TKTRNX.kminsx= *ix;
-    TKTRNX.kmaxsx= *ix + *iLx;
-    TKTRNX.kminsy= *iy;
-    TKTRNX.kmaxsy= *iy + *iLy;
-}
-
-#endif
-
-
-
-extern void TCSdrWIN__ movabs (FTNINT *ix,FTNINT *iy)
+extern void movabs (FTNINT *ix,FTNINT *iy)
 {
 int ixx, iyy; /* Erzwingt Typangleichung Windows-GDI / Fortran */
 
@@ -2812,7 +2744,7 @@ int ixx, iyy; /* Erzwingt Typangleichung Windows-GDI / Fortran */
 
 
 
-extern void TCSdrWIN__ drwabs (FTNINT *ix,FTNINT *iy)
+extern void drwabs (FTNINT *ix,FTNINT *iy)
 {
 FTNINT iXClip, iYClip;
 int ixx, iyy;
@@ -2866,7 +2798,7 @@ int ixx, iyy;
 
 
 
-extern void TCSdrWIN__ dshabs (FTNINT *ix,FTNINT *iy, FTNINT *iMask)
+extern void dshabs (FTNINT *ix,FTNINT *iy, FTNINT *iMask)
 {
 HPEN     hPenDash;
 FTNINT iXClip, iYClip;
@@ -2961,7 +2893,7 @@ int     iMaskIndex, ixx, iyy;
 
 
 
-extern void TCSdrWIN__ pntabs (FTNINT *ix,FTNINT *iy)
+extern void pntabs (FTNINT *ix,FTNINT *iy)
 {
 int     ixx, iyy; /* Erzwingt Typangleichung Windows-GDI / Fortran */
 
@@ -2990,7 +2922,7 @@ int     ixx, iyy; /* Erzwingt Typangleichung Windows-GDI / Fortran */
 
 
 
-extern void TCSdrWIN__ bckcol (FTNINT *iCol)
+extern void bckcol (FTNINT *iCol)
 {
 
 #if (JOURNALTYP == 3)
@@ -3011,7 +2943,7 @@ extern void TCSdrWIN__ bckcol (FTNINT *iCol)
 
 
 
-extern void TCSdrWIN__ lincol (FTNINT *iCol)
+extern void lincol (FTNINT *iCol)
 {
 
 HPEN    hPenOld;
@@ -3053,7 +2985,7 @@ HPEN    hPenOld;
 
 
 
-extern void TCSdrWIN__ txtcol (FTNINT *iCol)
+extern void txtcol (FTNINT *iCol)
 {
 
 #if (JOURNALTYP == 3)
@@ -3076,7 +3008,7 @@ extern void TCSdrWIN__ txtcol (FTNINT *iCol)
 
 
 
-extern void TCSdrWIN__ DefaultColour (void)
+extern void DefaultColour (void)
 {
     TKTRNX.iLinCol= TCSDefaultLinCol;
     TKTRNX.iTxtCol= TCSDefaultTxtCol;
@@ -3095,7 +3027,7 @@ extern void TCSdrWIN__ DefaultColour (void)
 
 
 
-extern void TCSdrWIN__ outgtext(FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) )
+extern void outgtext(FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) )
 {
 int iL;
 SIZE Size;
@@ -3201,7 +3133,7 @@ POINT CPpos;
 
 
 
-extern void TCSdrWIN__ italic (void)
+extern void italic (void)
 {
 HFONT   hOldFont;
 #if (JOURNALTYP == 3)
@@ -3239,7 +3171,7 @@ HFONT   hOldFont;
 
 
 
-extern void TCSdrWIN__ italir (void)
+extern void italir (void)
 {
 HFONT   hOldFont;
 #if (JOURNALTYP == 3)
@@ -3277,7 +3209,7 @@ HFONT   hOldFont;
 
 
 
-extern void TCSdrWIN__ dblsiz (void)
+extern void dblsiz (void)
 {
 HFONT   hOldFont;
 #if (JOURNALTYP == 3)
@@ -3317,7 +3249,7 @@ HFONT   hOldFont;
 
 
 
-extern void TCSdrWIN__ nrmsiz (void)
+extern void nrmsiz (void)
 {
 HFONT   hOldFont;
 #if (JOURNALTYP == 3)
@@ -3357,7 +3289,7 @@ HFONT   hOldFont;
 
 
 
-extern void TCSdrWIN__ csize (FTNINT *ix,FTNINT *iy)
+extern void csize (FTNINT *ix,FTNINT *iy)
 {
 TEXTMETRIC  lpTM;
 
@@ -3411,7 +3343,7 @@ TEXTMETRIC  lpTM;
 
 
 
-extern void TCSdrWIN__ tinput (FTNINT *ic)
+extern void tinput (FTNINT *ic)
 {
 MSG msg;        /* Message information */
 TCHAR iChar;
@@ -3542,7 +3474,7 @@ HWND hAktWindowInThread;
 
 
 
-extern void TCSdrWIN__ dcursr (FTNINT *ic,FTNINT *ix,FTNINT *iy)
+extern void dcursr (FTNINT *ic,FTNINT *ix,FTNINT *iy)
 {
 MSG msg;        /* Message information */
 TCHAR iButton, iKey;
@@ -3703,7 +3635,7 @@ LftDwn:
 
 
 
-extern void TCSdrWIN__ bell (void)
+extern void bell (void)
 {
     MessageBeep (-1);
 }
@@ -3711,7 +3643,7 @@ extern void TCSdrWIN__ bell (void)
 
 
 
-extern void TCSdrWIN__ outtext (FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) )
+extern void outtext (FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) )
 {
 int i;
 
@@ -3741,7 +3673,7 @@ int i;
 
 
 
-extern void TCSdrWIN__ GraphicError (FTNINT *iErr, FTNSTRPAR *ftn_string,
+extern void GraphicError (FTNINT *iErr, FTNSTRPAR *ftn_string,
                                      FTNINT *iL  FTNSTRPAR_TAIL(ftn_string))
 {
     TCSGraphicError (*iErr, FTNSTRPARA(ftn_string));
@@ -3755,15 +3687,12 @@ extern void TCSdrWIN__ GraphicError (FTNINT *iErr, FTNSTRPAR *ftn_string,
 */
 
 
-extern void TCSdrWIN__ hdcopy (void)
+extern void hdcopy (void)
 {
 FTNINT      iErr;
 // FTNSTRDESC  ftnstrg;
 TCHAR       FilNam[TCS_FILE_NAMELEN], OldFilNam[TCS_FILE_NAMELEN];
 OFSTRUCT    ReOpenBuf;
-#ifdef __cplusplus
- TCHAR      MessageBuf[STAT_MAXCOLUMNS]
-#endif
 
 #if (JOURNALTYP == 1)
  HMETAFILE  hmf, hmf1;
@@ -3790,40 +3719,19 @@ OFSTRUCT    ReOpenBuf;
               (_tcsicmp (FilNam,OldFilNam) > 0 )                          );
 
     if (_tcsicmp (FilNam,OldFilNam) <= 0 ) { /* kein Filename vorhanden */
-     #ifndef __cplusplus
-      iErr= WRN_HDCFILOPN;
-      TCSGraphicError (iErr,"");
-     #else
-      ftnstrg.addr= szTCSErrorMsg[WRN_HDCFILOPN];
-      ftnstrg.len= _tcslen (szTCSErrorMsg[WRN_HDCFILOPN]);
-      TCSdrWIN__ outtext (CALLFTNSTRA(ftnstrg) CALLFTNSTRL(ftnstrg));
-      TCSdrWIN__ bell ();
-     #endif
+     iErr= WRN_HDCFILOPN;
+     TCSGraphicError (iErr,"");
      return;                                /* Error during Open -> ret */
     }
 
-    #ifndef __cplusplus
-     iErr= MSG_HDCACT;
-     TCSGraphicError (iErr,FilNam);
-    #else
-     sprintf( MessageBuf, szTCSErrorMsg[MSG_HDCACT], FilNam );
-     ftnstrg.addr= MessageBuf;
-     ftnstrg.len= _tcslen (MessageBuf);
-     TCSdrWIN__ outtext (CALLFTNSTRA(ftnstrg) CALLFTNSTRL(ftnstrg));
-    #endif
+    iErr= MSG_HDCACT;
+    TCSGraphicError (iErr,FilNam);
 
 #if (JOURNALTYP ==1)
     hTCSNewMetaFileDC  = CreateMetaFile (FilNam);
     if (hTCSNewMetaFileDC == NULL) {
-     #ifndef __cplusplus
-      iErr= WRN_HDCFILOPN;
-      TCSGraphicError (iErr,"");
-     #else
-      ftnstrg.addr= szTCSErrorMsg[WRN_HDCFILOPN];
-      ftnstrg.len= _tcslen (szTCSErrorMsg[WRN_HDCFILOPN]);
-      TCSdrWIN__ outtext (CALLFTNSTRA(ftnstrg) CALLFTNSTRL(ftnstrg));
-      TCSdrWIN__ bell ();
-     #endif
+     iErr= WRN_HDCFILOPN;
+     TCSGraphicError (iErr,"");
      return;                                /* Error during Open -> ret */
     }
 
@@ -3848,15 +3756,8 @@ OFSTRUCT    ReOpenBuf;
     PlayMetaFile (hTCSNewMetaFileDC, hmf);
     hmf1= CloseMetaFile (hTCSNewMetaFileDC);
     if (hmf1 == NULL) {
-     #ifndef __cplusplus
-      iErr= WRN_HDCFILWRT;
-      TCSGraphicError (iErr,"");
-     #else
-      ftnstrg.addr= szTCSErrorMsg[WRN_HDCFILWRT];
-      ftnstrg.len= _tcslen (szTCSErrorMsg[WRN_HDCFILWRT]);
-      TCSdrWIN__ outtext (CALLFTNSTRA(ftnstrg) CALLFTNSTRL(ftnstrg));
-      TCSdrWIN__ bell ();
-     #endif
+     iErr= WRN_HDCFILWRT;
+     TCSGraphicError (iErr,"");
      return;                                /* Error during Write -> ret */
     } else {
      DeleteMetaFile (hmf1); /* Freigabe Resourcen, nicht Löschen des Files! */
@@ -3887,15 +3788,8 @@ OFSTRUCT    ReOpenBuf;
       MessageBox (NULL, lpMsgBuf, szTCSWindowName, MB_ICONSTOP);
       LocalFree( lpMsgBuf ); // Free the buffer
 //   } // Ende der Fehlerbehandlung
-     #ifndef __cplusplus
-      iErr= WRN_HDCFILOPN;
-      TCSGraphicError (iErr,"");
-     #else
-      ftnstrg.addr= szTCSErrorMsg[WRN_HDCFILOPN];
-      ftnstrg.len= _tcslen (szTCSErrorMsg[WRN_HDCFILOPN]);
-      TCSdrWIN__ outtext (CALLFTNSTRA(ftnstrg) CALLFTNSTRL(ftnstrg));
-      TCSdrWIN__ bell ();
-     #endif
+     iErr= WRN_HDCFILOPN;
+     TCSGraphicError (iErr,"");
      return;                                /* Error during Open -> ret */
     }
     DeleteEnhMetaFile (hmf1); /* Handle freigeben, File  nicht geloescht! */
@@ -3936,15 +3830,8 @@ OFSTRUCT    ReOpenBuf;
 #elif (JOURNALTYP == 3)
     fHandle= fopen(FilNam, "w+");
     if ( fHandle == NULL) {
-     #ifndef __cplusplus
-      iErr= WRN_HDCFILOPN;
-      TCSGraphicError (iErr,"");
-     #else
-      ftnstrg.addr= szTCSErrorMsg[WRN_HDCFILOPN];
-      ftnstrg.len= _tcslen (szTCSErrorMsg[WRN_HDCFILOPN]);
-      TCSdrWIN__ outtext (CALLFTNSTRA(ftnstrg) CALLFTNSTRL(ftnstrg));
-      TCSdrWIN__ bell ();
-     #endif
+     iErr= WRN_HDCFILOPN;
+     TCSGraphicError (iErr,"");
      return;                                /* Error during Open -> ret */
     }
 
@@ -4031,7 +3918,7 @@ Hier nicht benoetigt, nur wg. Kompatibilitaet zur DOS-Version enthalten
 */
 
 
-extern void TCSdrWIN__ lib_movc3 (FTNINT *len,FTNSTRPAR *sou,FTNSTRPAR *dst
+extern void lib_movc3 (FTNINT *len,FTNSTRPAR *sou,FTNSTRPAR *dst
                                 FTNSTRPAR_TAIL(sou)  FTNSTRPAR_TAIL(dst) )
 
 {

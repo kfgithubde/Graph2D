@@ -1,8 +1,8 @@
 /** ****************************************************************************
 \file       TCSdSDLc.c
 \brief      SDL Port: Low-Level Driver
-\version    1.3
-\author     (C) 2022 Dr.-Ing. Klaus Friedewald
+\version    1.5
+\author     (C) 2023 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
          Systemnahe Graphikroutinen für die Tektronix Emulation
@@ -64,8 +64,6 @@
 
 #define INIFILEXT ".xml"
 #define FNTFILEXT ".ttf"
-#define JOURNALTYP 3
-#define XMLSUPPORT
 #define AUDIOSUPPORT
 #define HIGHQUALCHAR
 
@@ -99,13 +97,9 @@
  #include "SDL_audio.h"
 #endif
 
-#ifdef XMLSUPPORT
- #include  "mxml.h"
-#endif
+#include "mxml.h"
 
-#if (JOURNALTYP == 3)
- #include "sglib.h"
-#endif
+#include "sglib.h"
 
 #include "TCSdSDLc.h"
 #include "TKTRNX.h"
@@ -240,12 +234,10 @@ static  TTF_Font* TCSstatusfont = NULL;
 static	SDL_Window *TCSstatwindow = NULL;
 static 	SDL_Renderer *TCSstatrenderer = NULL;
 
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ {struct xJournalEntry_typ * previous;
+struct xJournalEntry_typ {struct xJournalEntry_typ * previous;
                           struct xJournalEntry_typ * next;
                           FTNINT action; FTNINT i1; FTNINT i2;};
  static struct xJournalEntry_typ* xTCSJournal = NULL;
-#endif
 
 #ifdef AUDIOSUPPORT
  static SDL_AudioSpec      SDL_AudioDev_optained;
@@ -454,9 +446,7 @@ void RepaintBuffer () // Hier nicht GraphicError verwenden(Rekursionsschleifen)!
 FTNINT DashStyle;
 int wx, wz, iStringLen, iStringActual;
 char szString [TCS_MESSAGELEN+1];
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ *xJournalEntry;
-#endif
+struct xJournalEntry_typ *xJournalEntry;
 
 #ifdef TRACE_CALLS
     SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> called");
@@ -470,7 +460,6 @@ char szString [TCS_MESSAGELEN+1];
                                       , sdlColorTable[TKTRNX.iBckCol].a);
 	SDL_RenderClear (TCSrenderer); // Backbuffer nach RenderPresent undefiniert
 
-#if (JOURNALTYP == 3)
  #ifdef TRACE_CALLS
     SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> xTCSJournal: Ptr= %p", xTCSJournal);
  #endif
@@ -638,9 +627,6 @@ char szString [TCS_MESSAGELEN+1];
  #ifdef TRACE_CALLS
     SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "RepaintBuffer> xTCSJournal: Ptr= %p / Last Entry: Ptr= %p", xTCSJournal, xJournalEntry);
  #endif
-
-#endif
-
 }
 
 
@@ -762,7 +748,6 @@ SDL_Point winsiz;
 
 /* Eventhandler zum Parsen von XML-Dateien */
 
-#ifdef XMLSUPPORT
 
 void sax_callback (mxml_node_t *node, mxml_sax_event_t event, void *usr)
 {
@@ -1064,17 +1049,12 @@ void sax_error_callback (char *mssg)
     return;
 }
 
-/* ------------------------------------------------------------------------- */
-
-#endif   // Ende XML-Unterstützung
-
 
 
 /*
 ------------------- Userroutinen: Initialisierung ------------------------------
 */
 
-#ifdef XMLSUPPORT
 
 void XMLreadProgPar (const char * filname)
 {
@@ -1094,9 +1074,6 @@ mxml_node_t *tree;
       }
     }
 }
-
-#endif    // Ende XML-Unterstützung
-
 
 
 /*
@@ -1182,7 +1159,7 @@ FTNSTRDESC  ftn_WorkString, o, n;
 }
 
 
-extern void TCSdrWIN__ winlbl (FTNSTRPAR * PloWinNam, FTNSTRPAR * StatWinNam,
+extern void winlbl (FTNSTRPAR * PloWinNam, FTNSTRPAR * StatWinNam,
                                             FTNSTRPAR *IniFilNam
                                             FTNSTRPAR_TAIL(PloWinNam)
                                             FTNSTRPAR_TAIL(StatWinNam)
@@ -1285,9 +1262,8 @@ Uint32 flags;
 SDL_Point winsiz;
 SDL_Rect rect;
 
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ * xJournalEntry;
-#endif
+struct xJournalEntry_typ * xJournalEntry;
+
 
     if (TCSinitialized) return;   /* Bereits initialisiert */
 
@@ -1452,7 +1428,6 @@ SDL_Rect rect;
         Anlegen des Journals
     */
 
-#if (JOURNALTYP == 3)
     xTCSJournal= NULL;
     SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> xTCSJournal initialisiert: Ptr= %p", xTCSJournal);
 
@@ -1475,7 +1450,6 @@ SDL_Rect rect;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
     SDL_LogDebug (SDL_LOG_CATEGORY_VIDEO, "INITT1> Nach 2. LIST_ADD: xTCSJournal: Ptr= %p / xJournalEntry: Ptr= %p", xTCSJournal, xJournalEntry);
     SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "INITT1> previous: Ptr= %p / next: Ptr= %p", xJournalEntry -> previous, xJournalEntry -> next);
-#endif
 
     /*
         Initialisierung erfolgreich abgeschlossen
@@ -1490,10 +1464,7 @@ SDL_Rect rect;
 
 extern void finitt ()
 {
-
-#if (JOURNALTYP == 3)
-  struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     if (!TCSinitialized) return; /* Graphiksystem nicht initialisiert */
 
@@ -1502,11 +1473,9 @@ extern void finitt ()
 
     TCSinitialized= false;       /* Ab jetzt nicht mehr funktionsfähig */
 
-#if (JOURNALTYP == 3)
     SGLIB_DL_LIST_MAP_ON_ELEMENTS (struct xJournalEntry_typ, xTCSJournal,
            xJournalEntry,previous,next, { free (xJournalEntry);}); // free all
     xTCSJournal= NULL;
-#endif
 
     TTF_CloseFont(TCSfont);
     TTF_CloseFont(TCSstatusfont);
@@ -1546,7 +1515,7 @@ extern void iowait (void)
 
 
 
-extern void TCSdrWIN__ swind1 (FTNINT *ix1,FTNINT *iy1,FTNINT *ix2,FTNINT *iy2)
+extern void swind1 (FTNINT *ix1,FTNINT *iy1,FTNINT *ix2,FTNINT *iy2)
 {
     ClippingNotActive = (*ix1==0) && (*iy1==0) &&
                                         (*ix2==TEK_XMAX) && (*iy2==TEK_YMAX);
@@ -1555,12 +1524,9 @@ extern void TCSdrWIN__ swind1 (FTNINT *ix1,FTNINT *iy1,FTNINT *ix2,FTNINT *iy2)
 
 
 
-extern void TCSdrWIN__ erase (void)
+extern void erase (void)
 {
-
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
 	SDL_SetRenderDrawColor(TCSrenderer, sdlColorTable[TKTRNX.iBckCol].r
 	                                  , sdlColorTable[TKTRNX.iBckCol].g
@@ -1569,7 +1535,6 @@ extern void TCSdrWIN__ erase (void)
 	SDL_RenderClear (TCSrenderer);
     SDL_RenderPresent (TCSrenderer);
 
-#if (JOURNALTYP == 3)
      SGLIB_DL_LIST_MAP_ON_ELEMENTS (struct xJournalEntry_typ, xTCSJournal,
            xJournalEntry,previous,next, {free (xJournalEntry);}); // free all
 
@@ -1608,21 +1573,15 @@ extern void TCSdrWIN__ erase (void)
      xJournalEntry->i1= 0;
      xJournalEntry->i2= 0;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
 }
 
 
 
-extern void TCSdrWIN__ movabs (FTNINT *ix,FTNINT *iy)
+extern void movabs (FTNINT *ix,FTNINT *iy)
 {
-
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
-
+struct xJournalEntry_typ    * xJournalEntry;
 
     TKTRNX.kBeamX= *ix; TKTRNX.kBeamY= *iy;
-#if (JOURNALTYP == 3)
     if (PointInWindow (*ix, *iy)) {
      xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
@@ -1631,17 +1590,14 @@ extern void TCSdrWIN__ movabs (FTNINT *ix,FTNINT *iy)
      xJournalEntry->i2= *iy;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
     }
-#endif
 }
 
 
 
-extern void TCSdrWIN__ drwabs (FTNINT *ix,FTNINT *iy)
+extern void drwabs (FTNINT *ix,FTNINT *iy)
 {
 FTNINT iXClip, iYClip, iXClip2, iYClip2;
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     if (ClipLineStart(TKTRNX.kBeamX,TKTRNX.kBeamY, *ix,*iy, &iXClip,&iYClip)) {
      ClipLineStart(*ix,*iy, TKTRNX.kBeamX,TKTRNX.kBeamY, &iXClip2,&iYClip2); // geclippter Endpunkt
@@ -1652,7 +1608,6 @@ FTNINT iXClip, iYClip, iXClip2, iYClip2;
      SDL_RenderDrawLine(TCSrenderer, HiResX(iXClip),HiResY(TEK_YMAX-iYClip),
                                    HiResX(iXClip2),HiResY(TEK_YMAX-iYClip2));
 
-#if (JOURNALTYP == 3)
      xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_MOVABS;
@@ -1666,31 +1621,24 @@ FTNINT iXClip, iYClip, iXClip2, iYClip2;
      xJournalEntry->i1= iXClip2;
      xJournalEntry->i2= iYClip2;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
     }
     TKTRNX.kBeamX= *ix; TKTRNX.kBeamY= *iy;
-#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action=  XACTION_MOVABS;
     xJournalEntry->i1= *ix;
     xJournalEntry->i2= *iy;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
 }
 
 
 
-extern void TCSdrWIN__ dshabs (FTNINT *ix,FTNINT *iy, FTNINT *iMask)
+extern void dshabs (FTNINT *ix,FTNINT *iy, FTNINT *iMask)
 {
 FTNINT iXClip,iYClip, iXClip2, iYClip2;
 FTNINT ixx,iyy, ixx2,iyy2;
 float xx,yy, dx,dy, dLin,dBlank;
-
-
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     if (ClipLineStart(TKTRNX.kBeamX,TKTRNX.kBeamY, *ix,*iy, &iXClip,&iYClip)) {
      ClipLineStart(*ix,*iy, TKTRNX.kBeamX,TKTRNX.kBeamY, &iXClip2,&iYClip2); // Clip Endpunkt
@@ -1700,7 +1648,6 @@ float xx,yy, dx,dy, dLin,dBlank;
                                        , sdlColorTable[TKTRNX.iLinCol].a );
      DrawHiResDashLine (iXClip,iYClip, iXClip2,iYClip2,iMask);
 
-#if (JOURNALTYP == 3)
      xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_MOVABS;
@@ -1721,27 +1668,22 @@ float xx,yy, dx,dy, dLin,dBlank;
      xJournalEntry->i1= iXClip2;
      xJournalEntry->i2= iYClip2;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
     }
     TKTRNX.kBeamX= *ix; TKTRNX.kBeamY= *iy;
-#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action=  XACTION_MOVABS;
     xJournalEntry->i1= *ix;
     xJournalEntry->i2= *iy;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
 }
 
 
 
-extern void TCSdrWIN__ pntabs (FTNINT *ix,FTNINT *iy)
+extern void pntabs (FTNINT *ix,FTNINT *iy)
 {
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
- FTNINT ActPntMov;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
+FTNINT ActPntMov;
 
     TKTRNX.kBeamX= *ix; TKTRNX.kBeamY= *iy;
     if (PointInWindow (*ix, *iy)) {
@@ -1750,7 +1692,6 @@ extern void TCSdrWIN__ pntabs (FTNINT *ix,FTNINT *iy)
                                        , sdlColorTable[TKTRNX.iLinCol].b
                                        , sdlColorTable[TKTRNX.iLinCol].a );
      SDL_RenderDrawPoint(TCSrenderer, HiResX(*ix),HiResX(TEK_YMAX-*iy));
-#if (JOURNALTYP == 3)
      ActPntMov= XACTION_PNTABS;
     } else {
      ActPntMov= XACTION_MOVABS;
@@ -1761,82 +1702,63 @@ extern void TCSdrWIN__ pntabs (FTNINT *ix,FTNINT *iy)
     xJournalEntry->i1= *ix;
     xJournalEntry->i2= *iy;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#else
-    }
-#endif
-
 }
 
 
 
-extern void TCSdrWIN__ bckcol (FTNINT *iCol)
+extern void bckcol (FTNINT *iCol)
 {
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     TKTRNX.iBckCol= *iCol;
     if (*iCol > MAX_COLOR_INDEX) TKTRNX.iBckCol= MAX_COLOR_INDEX;
 
-#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action=  XACTION_BCKCOL;
     xJournalEntry->i1= TKTRNX.iBckCol;
     xJournalEntry->i2= 0;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
-
 }
 
 
 
-extern void TCSdrWIN__ lincol (FTNINT *iCol)
+extern void lincol (FTNINT *iCol)
 {
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     TKTRNX.iLinCol= *iCol;
     if (*iCol > MAX_COLOR_INDEX) TKTRNX.iLinCol= MAX_COLOR_INDEX;
 
-#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action=  XACTION_LINCOL;
     xJournalEntry->i1= TKTRNX.iLinCol;
     xJournalEntry->i2= 0;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
-
 }
 
 
 
 
-extern void TCSdrWIN__ txtcol (FTNINT *iCol)
+extern void txtcol (FTNINT *iCol)
 {
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     TKTRNX.iTxtCol= *iCol;
     if (*iCol > MAX_COLOR_INDEX) TKTRNX.iTxtCol= MAX_COLOR_INDEX;
 
-#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action=  XACTION_TXTCOL;
     xJournalEntry->i1= TKTRNX.iTxtCol;
     xJournalEntry->i2= 0;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
-
 }
 
 
 
-extern void TCSdrWIN__ DefaultColour (void)
+extern void DefaultColour (void)
 {
     TKTRNX.iLinCol= TCSDefaultLinCol;
     TKTRNX.iTxtCol= TCSDefaultTxtCol;
@@ -1855,16 +1777,11 @@ extern void TCSdrWIN__ DefaultColour (void)
 
 
 
-extern void TCSdrWIN__ outgtext(FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) )
+extern void outgtext(FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) )
 {
-int iL;
+int i, iL;
 char outbuf [TCS_MESSAGELEN+1];
-
-
-#if (JOURNALTYP == 3)
- int i;
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     if (FTNSTRPARA(ftn_string)[0] == '\0' ) return; // Leerstring char(0)
 
@@ -1879,7 +1796,6 @@ char outbuf [TCS_MESSAGELEN+1];
 
     PlotText (outbuf);
 
-#if (JOURNALTYP == 3)
      xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
      if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
      xJournalEntry->action=  XACTION_GTEXT;
@@ -1907,60 +1823,49 @@ char outbuf [TCS_MESSAGELEN+1];
      xJournalEntry->i1= TKTRNX.kBeamX;
      xJournalEntry->i2= TKTRNX.kBeamY;
      SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
 
 }
 
 
 
-extern void TCSdrWIN__ italic (void)
+extern void italic (void)
 {
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     TKTRNX.kitalc = 1;
     TTF_SetFontStyle(TCSfont, TTF_STYLE_ITALIC);
 
-#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
     xJournalEntry->i2= TKTRNX.ksizef;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
 }
 
 
 
-extern void TCSdrWIN__ italir (void)
+extern void italir (void)
 {
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     TKTRNX.kitalc = 0;
     TTF_SetFontStyle(TCSfont, TTF_STYLE_NORMAL);
 
-#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
     xJournalEntry->i2= TKTRNX.ksizef;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
 }
 
 
 
-extern void TCSdrWIN__ dblsiz (void)
+extern void dblsiz (void)
 {
 int wx,wz;
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     TKTRNX.ksizef = 1;
 
@@ -1978,24 +1883,20 @@ int wx,wz;
      }
 	}
 
-	#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
     xJournalEntry->i2= TKTRNX.ksizef;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
 }
 
 
 
-extern void TCSdrWIN__ nrmsiz (void)
+extern void nrmsiz (void)
 {
 int wx, wz;
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ    * xJournalEntry;
-#endif
+struct xJournalEntry_typ    * xJournalEntry;
 
     TKTRNX.ksizef = 0;
 
@@ -2013,14 +1914,12 @@ int wx, wz;
      }
 	}
 
-#if (JOURNALTYP == 3)
     xJournalEntry= (struct xJournalEntry_typ*) malloc (sizeof (struct xJournalEntry_typ));
     if (xJournalEntry == NULL) TCSGraphicError (WRN_JOUADD,"");
     xJournalEntry->action= XACTION_FONTATTR;
     xJournalEntry->i1= TKTRNX.kitalc;
     xJournalEntry->i2= TKTRNX.ksizef;
     SGLIB_DL_LIST_ADD (xJournalEntry_typ, xTCSJournal, xJournalEntry, previous, next)
-#endif
 }
 
 
@@ -2028,7 +1927,7 @@ int wx, wz;
 
 
 
-extern void TCSdrWIN__ csize (FTNINT *ix,FTNINT *iy)
+extern void csize (FTNINT *ix,FTNINT *iy)
 {
      *ix=  TKTRNX.khorsz;
      *iy=  TKTRNX.kversz;
@@ -2036,7 +1935,7 @@ extern void TCSdrWIN__ csize (FTNINT *ix,FTNINT *iy)
 
 
 
-extern void TCSdrWIN__ outtext(FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) )
+extern void outtext(FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) )
 {
 int iL;
 char outbuf [TCS_MESSAGELEN+1];
@@ -2086,7 +1985,7 @@ SDL_Texture* texture;
 
 
 
-extern void TCSdrWIN__ bell (void)
+extern void bell (void)
 {
 #ifdef AUDIOSUPPORT
     AudioSample_nr= 0;
@@ -2098,7 +1997,7 @@ extern void TCSdrWIN__ bell (void)
 }
 
 
-extern void TCSdrWIN__ GraphicError (FTNINT *iErr, FTNSTRPAR *ftn_string,
+extern void GraphicError (FTNINT *iErr, FTNSTRPAR *ftn_string,
                                      FTNINT *iL  FTNSTRPAR_TAIL(ftn_string))
 {
     TCSGraphicError (*iErr, FTNSTRPARA(ftn_string));
@@ -2113,7 +2012,7 @@ extern void TCSdrWIN__ GraphicError (FTNINT *iErr, FTNSTRPAR *ftn_string,
 
 
 
-extern void TCSdrWIN__ dcursr (FTNINT *ic,FTNINT *ix,FTNINT *iy)
+extern void dcursr (FTNINT *ic,FTNINT *ix,FTNINT *iy)
 {
 SDL_Event  event;
 
@@ -2157,17 +2056,14 @@ SDL_Event  event;
 
 
 
-extern void TCSdrWIN__ hdcopy (void)
+extern void hdcopy (void)
 {
 
 FTNINT      iErr;
 FTNSTRDESC  ftnstrg;
 char        szTmpString[TCS_FILE_NAMELEN];
 SDL_RWops*  hFile;
-
-#if (JOURNALTYP == 3)
- struct xJournalEntry_typ *xJournalEntry;
-#endif
+struct xJournalEntry_typ *xJournalEntry;
 
     snprintf( szTmpString,TCS_FILE_NAMELEN, szTCSHardcopyFile, iHardcopyCount++ );
     hFile = SDL_RWFromFile( szTmpString, "r" );
@@ -2192,7 +2088,6 @@ SDL_RWops*  hFile;
 
     TCSGraphicError (MSG_HDCACT, szTmpString);
 
-#if (JOURNALTYP == 3)
     SGLIB_DL_LIST_GET_LAST (struct xJournalEntry_typ, xTCSJournal, previous, next, xJournalEntry)
 #ifdef TRACE_CALLS
     SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> xTCSJournal: Ptr= %p", xTCSJournal);
@@ -2276,9 +2171,6 @@ SDL_RWops*  hFile;
    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> xTCSJournal New Current Entry: Ptr= %p", xJournalEntry);
    SDL_LogVerbose (SDL_LOG_CATEGORY_VIDEO, "HDCOPY> Previous: Ptr= %p  Next: Ptr= %p", xJournalEntry->previous, xJournalEntry->next);
 #endif // TRACE_CALLS
-
-
-#endif // Journaltyp=3
 
 }
 

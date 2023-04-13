@@ -22,5 +22,6 @@ C
        call check(xpts,ypts)
        call dsplay(xpts,ypts)
        call finitt
+	   stop
        end
 

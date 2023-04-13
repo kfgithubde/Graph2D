@@ -51,7 +51,6 @@ C
       call cplot(x2,y2)
 
       call finitt (0,700)
-      stop
       end
 
       real function f1 (x, fac)

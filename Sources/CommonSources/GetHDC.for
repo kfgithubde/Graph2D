@@ -1,6 +1,6 @@
 C> \file       GetHDC.for
-C> \brief      Utility: Restore Hardcopies
-C> \version    1.0
+C> \brief      Restore Hardcopies
+C> \version    1.2
 C> \author     (C) 2023 Dr.-Ing. Klaus Friedewald
 C> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 C> \~german
@@ -15,7 +15,7 @@ C
       logical function GetHDC (Filnam)
 C> \param FilNam: Hardcopyfie
 C> \result (optional) .true. -> Error
-      implicit none
+      include 'Tktrnx.fd'
       integer TCS_MESSAGELEN, iUnit
       parameter (TCS_MESSAGELEN=132)
       character *(*) Filnam
@@ -96,6 +96,22 @@ C> \result (optional) .true. -> Error
           if (i2.eq.1) call dblsiz()
         else if (Action.eq.14) then ! XACTION_NOOP
           continue
+        else if (Action.eq.15) then ! XACTION_CLIP
+          if (i1.eq.0) then ! clipping not active
+            kminsx= 0
+            kminsy= 0
+            kmaxsx= 1023 ! TEK_XMAX
+            kmaxsy= 780 ! TEK_YMAX
+            call swind1(kminsx,kminsy,kmaxsx,kmaxsy) ! Set bool ClippingNotActive
+          end if
+        else if (Action.eq.16) then ! XACTION_CLIP1
+          kminsx= i1
+          kminsy= i2
+          call swind1(kminsx,kminsy,kmaxsx,kmaxsy)
+        else if (Action.eq.17) then ! XACTION_CLIP2
+          kmaxsx= i1
+          kmaxsy= i2
+          call swind1(kminsx,kminsy,kmaxsx,kmaxsy)
         else ! unknown
           continue
         end if
@@ -103,9 +119,5 @@ C> \result (optional) .true. -> Error
 
       close (iUnit)
       GetHDC= .false.
-      return
-          
- 99       continue ! Error Exit
-          call GraphicError (8, ' ')
       return
       end

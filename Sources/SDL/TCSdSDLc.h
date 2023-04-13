@@ -1,8 +1,8 @@
 /** ****************************************************************************
 \file    TCSdSDLc.h
 \brief   SDL Port: Low-Level Driver
-\version 1.1
-\author  (C) 2022 Dr.-Ing. Klaus Friedewald
+\version 1.2
+\author  (C) 2023 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
          Headerfile zu TCSdSDLc.c
@@ -25,6 +25,13 @@
 #ifdef _UNICODE
  #error "GNU f77 basiert nicht auf UNICODE !!!"
 #endif
+
+
+/* Deklaration analog C++ */
+
+ typedef int bool;
+ #define false 0
+ #define true !false
 
 
 /* Deklaration Parameteruebergabe Fortran <-> C */
@@ -104,9 +111,6 @@ void GraphicError (FTNINT *iErr, FTNSTRPAR *ftn_string,
 void outtext(FTNSTRPAR * ftn_string FTNSTRPAR_TAIL(ftn_string) );
 void dcursr (FTNINT *ic,FTNINT *ix,FTNINT *iy);
 void finitt ();
-
-
-/* Systemparameter */
 
 
 
@@ -327,59 +331,3 @@ void finitt ();
     #define TCS_INIDEF_INI2 "%s"
     #define TCS_INIVAR_INI2L "G2d2xInittL"
     #define TCS_INIDEF_INI2L 5
-
-
-/* ------------ Steuerung C++: Klassendefinition / C: Unterprogramme ------ */
-
-#ifdef __cplusplus
-
-class TCSdrWIN
-{
-public:
-            TCSdrWIN();
-  virtual   ~TCSdrWIN();
-
-            tcslev3 (FTNINT *SysLev);
-            winlbl (FTNSTRDESC * PloWinNam, FTNSTRDESC * StatWinNam,
-                FTNSTRDESC * IniFilNam, FTNINT *hIcon, FTNINT hIn, FTNINT hPrevIn);
-
-            initt1 (HINSTANCE *hParentInstance);
-            finitt ();
-            erase ();
-            swindo (FTNINT *ix,FTNINT *iLx, FTNINT *iy,FTNINT *iLy);
-            swind1 (FTNINT *ix,FTNINT *iLx, FTNINT *iy,FTNINT *iLy);
-            movabs (FTNINT *ix,FTNINT *iy);
-            drwabs (FTNINT *ix,FTNINT *iy);
-            dshabs (FTNINT *ix,FTNINT *iy, FTNINT *iMask);
-            pntabs (FTNINT *ix,FTNINT *iy);
-            bckcol (FTNINT *iCol);
-            lincol (FTNINT *iCol);
-            txtcol (FTNINT *iCol);
-            DefaultColour ();
-            outgtext(FTNSTRDESC * ftn_string);
-            italic ();
-            italir ();
-            dblsiz ();
-            nrmsiz ();
-  static    bell ();
-  static    outtext (FTNSTRDESC * ftn_string);
-            tinput (FTNINT *ic);
-            dcursr (FTNINT *ic,FTNINT *ix,FTNINT *iy);
-            GraphicErrorMsg (FTNINT *iErr, FTNSTRDESC *ftn_string, FTNINT *iL);
-            csize (FTNINT *ix,FTNINT *iy);
-            hdcopy ();
-            lib_movc3 (FTNINT *len,FTNSTRDESC *sou,FTNSTRDESC *dst);
-};
-
- #define TCSdrWIN__ TCSdrWIN:: /* zur Vereinheitlichung C++ und C */
-
-#else /* __cplusplus */
-
- #define TCSdrWIN__
-
- typedef int bool;
- #define false 0
- #define true !false
-
-#endif /* not __cplusplus */
-

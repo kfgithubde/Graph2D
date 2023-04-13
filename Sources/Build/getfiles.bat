@@ -37,6 +37,7 @@ if /I "%1%" neq "Win16" goto NoWin16
  echo Copying Files for 16bit Windows static Library
  copy ..\windows\*.* *.*
  copy ..\windows\Win16 *.*
+ rename PlotHDC-Watcom.for PlotHDC.for
  goto finish
 :NoWin16
 
@@ -46,6 +47,7 @@ if /I "%1%" neq "Win32" goto NoWin32
  copy ..\windows\Win32lib *.*
  copy ..\..\OpenContent\binaries\Watcom\include\*.*
  copy ..\..\OpenContent\binaries\Watcom\lib\*.*
+ rename PlotHDC-Watcom.for PlotHDC.for
  goto finish
 :NoWin32
 
@@ -55,6 +57,7 @@ if /I "%1%" neq "DLL32" goto NoDll32
  copy ..\windows\Win32dll *.*
  copy ..\..\OpenContent\binaries\Watcom\include\*.*
  copy ..\..\OpenContent\binaries\Watcom\lib\*.*
+ rename PlotHDC-Watcom.for PlotHDC.for
  goto finish
 :NoDll32
 
@@ -66,6 +69,7 @@ if /I "%1%" neq "GNU32" goto NoGnu32
  copy ..\..\OpenContent\binaries\gcc\include\sglib.h
  copy ..\..\OpenContent\binaries\gcc\lib\32bit\*.*
  copy ..\windows\Gnu32lib\CodeBlocks *.*
+ rename PlotHDC-GCC.for PlotHDC.for
  goto finish
 :NoGnu32
 
@@ -76,6 +80,7 @@ if /I "%1%" neq "GNU64" goto NoGnu64
  copy ..\..\OpenContent\binaries\gcc\include\mxml.h
  copy ..\..\OpenContent\binaries\gcc\include\sglib.h
  copy ..\..\OpenContent\binaries\gcc\lib\64bit\*.*
+ rename PlotHDC-GCC.for PlotHDC.for
  goto finish
 :NoGnu64
 

@@ -29,7 +29,7 @@ Hint: the batchfiles are protected against del \*.\* in the console, but not aga
 
 Copy the necessary files by executing getfiles.bat and selecting the  proper development system. Valid options include:
 
--	MINGW-GCC for 64 and 32 bit Windows static libraries  
+-	MINGW-GCC for 64/32 bit Windows and SDL2 libraries  
 With Code::Blocks use Graph2D.workspace
 -	Linux-GCC on Raspberry Pi: Copy and compile on the target machine
 -	Open Watcom for 32 and 16 bit win libraries (static and/or dynamic)  

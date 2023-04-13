@@ -69,7 +69,7 @@ Colors are set by subroutines LINCOL(iCol), TXTCOL(iCol), BCKCOL(iCol) and Defau
 
 ### Hardcopies
 
-- SDL2: proprietary ASCII-Journalfile (*.hdc)
+- SDL2 and wX: proprietary ASCII-Journalfile (*.hdc)
 - Windows: Windows Metafile (*.wmf) 
 - DOS: Bitmap (*.bmp)
 - CP/M: Bitmap (*.HDC)
@@ -145,10 +145,13 @@ Outputs the multilingual errormessage #iErrNo, completed with String. The messag
 
 #### GetHDC (Filename)
 
-Plots the the ASCII-Hardcopyfile of Type 3 (Default in SDL and wX).
+Plots the the ASCII-Hardcopyfile of Type 3 (Default in SDL and wX). Can be called as a subroutine or as a logical function. If invoked as a function, the result .false. means success, .true. is returned in case of an error.
 
 <br>
 
 #### ioWait (iDummy)
 
-SDL2 only: Forces a FLUSH BACKBUFFER. Rarely needed, because every change of the window and every input refreshes the window.
+Originally used to grant Tektronix 4010 Terminals sufficient time in order to execute its commands in case of "fast" Terminal connections (9600 Baud). Now a call to ioWait() in some enviroments forces a redraw of the window.
++ CP/M, DOS, MS-Windows: Dummyroutine
++ SDL2: Forces a FLUSH BACKBUFFER. Rarely needed, because every change of the window and every input refreshes the window.
++ wX: Draws the graph. A call to ioWait() is necessary at the end of each plotting routine, which is not terminated by a call to finitt(). 

@@ -39,5 +39,4 @@ C
 
        write (6,*) 'STOP'
  500   format (1x, a1)
-       stop
        end

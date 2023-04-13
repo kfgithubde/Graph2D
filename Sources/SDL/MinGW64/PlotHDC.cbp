@@ -30,13 +30,13 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-     		<Add option="-m64" />
+			<Add option="-m64" />
 		</Compiler>
 		<Linker>
 			<Add option="-lgraph2d -lmxml -lSDL2 -lSDL2_ttf" />
 			<Add directory="./" />
 		</Linker>
-		<Unit filename="PlotHDC.for">
+		<Unit filename="PlotHDC.f03">
 			<Option weight="0" />
 		</Unit>
 		<Extensions />

@@ -1,8 +1,8 @@
 /** ****************************************************************************
 \file       TKTRNX.h
 \brief      MS Windows Port: TCS Common Block TKTRNX
-\version    1.3
-\author     (C) 2022 Dr.-Ing. Klaus Friedewald
+\version    1.4
+\author     (C) 2023 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
          C Header passend zu TKTRNX.fd
@@ -28,7 +28,8 @@ FTNINT
 //           kkmode,
      khorsz,kversz,
      kitalc,ksizef,
-     klmrgn,krmrgn, kScrX,kScrY,
+     klmrgn,krmrgn,
+//           kScrX,kScrY,
 //           ktblsz,khorzt(10),kvertt(10),
      kBeamX,kBeamY,
 //           kmovef,kpchar(4),kdasht,

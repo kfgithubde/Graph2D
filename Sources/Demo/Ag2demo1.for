@@ -15,5 +15,4 @@ C
        call symbl(1)
        call cplot(x,y1)
        call finitt (0,700)
-       stop
        end

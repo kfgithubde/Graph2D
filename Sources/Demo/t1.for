@@ -180,5 +180,4 @@ C
 210   format ('iC:',i4,' iX:',i4,' iY:',i4,' Press q to quit')
 
 
-      stop
       end
