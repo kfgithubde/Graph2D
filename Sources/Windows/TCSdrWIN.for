@@ -262,13 +262,26 @@ C
 
 
 C
-C  Dummyroutinen (WINLBL keine Dummyroutine, ALPHA zusätzlich)
+C>  Entry Dummyroutinen
+C         (WINLBL keine Dummyroutine, ALPHA zusätzlich)
 C
 
       subroutine    AnMode
+C> AlfMod
       entry         AlfMod
+C> pClipt
       entry         pClipt
+C> ioWait
       entry         ioWait
+C> alpha
       entry         alpha
       return
       end
+
+
+	  
+      logical function WINselect (iDummy)
+	  WINselect= .false.
+	  return
+	  end
+	

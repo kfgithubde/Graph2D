@@ -118,8 +118,13 @@ if /I "%1%" neq "SDLPI" goto NoSDLPI
 
 if /I "%1%" neq "WX" goto NoWX
  echo Copying Files for wxWidgets Library
- echo Not Yet Implemented
-   goto done
+ copy ..\wxWidgets\*.* *.*
+ copy ..\wxWidgets\wX64 *.*
+ mkdir wxDemo
+ copy ..\wxWidgets\wxDemo .\wxDemo\*.*
+ mkdir wxDemo\wxsmith
+ copy ..\wxWidgets\wxDemo\wxsmith .\wxDemo\wxsmith\*.*
+ copy ..\..\OpenContent\sglib\sglib.h *.*
  goto finish
 :NoWX
 
@@ -129,6 +134,38 @@ goto done
 :finish
 copy ..\CommonSources\*.* *.*
 copy ..\demo\*.* *.*
+
+if /I "%1%" neq "CPM" goto NoCpm1
+ del Ag2D4Usr.for
+ del GetHDC.for
+ del *.f03
+ del *.f90
+ del strings.for
+ del t?.for
+ goto done
+:NoCpm1
+
+if /I "%1%" neq "Dos" goto NoDos1
+ del GetHDC.for
+ del *.f03
+ del *.f90
+ goto done
+:NoDos1
+
+if /I "%1%" neq "Win16" goto NoWatcom1
+if /I "%1%" neq "Win32" goto NoWatcom1
+if /I "%1%" neq "DLL32" goto NoWatcom1
+ del *.f03
+ del *.f90
+ goto done
+:NoWatcom1
+
+if /I "%1%" neq "WX" goto NoWX1
+ del Ag2demo2.for
+ copy ..\wxWidgets\*.* *.*
+ copy ..\wxWidgets\Ag2demo2.for *.*
+ goto done
+:NoWX1
 
 :done
  echo Done.

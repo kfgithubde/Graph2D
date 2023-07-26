@@ -1,0 +1,114 @@
+/*! \mainpage Plot10 & Advanced Graphing II
+\~german
+
+Graph2D ist in Fortran2008/FTN77 und ANSI C++11/C90 geschrieben. Compilieranweisungen liegen für Windows (MinGW) unter "Zusätzliche Informationen" vor.
+\n\n
+
+### Erstellung der Graphikbibliothek:
+Nach Kopieren der Quelldateien durch "$getfiles.bat wx" in das /build Unterverzeichnis befinden 
+sich dort auch die Projektdateien für CodeBlocks (Windows IDE) UND EIN LINUX BASHSCRIPT.
+\n\n
+
+### Verwendung der Graphikbibliothek:
+Die Haupteigenschaften können folgendermaßen angepasst werden:
+- Initialisierung: Durch das Unterprogramm WINLBL und/oder *.xml-Dateien
+- Icons (nur bei Windows): Durch Linken einer Resource
+\n\n
+
+### Hardcopies
+werden als proprietäres ASCII-Journalfile *.hdc ausgegeben. 
+
+
+\page "Initialisierung der Zeichenfenster"
+## Verwendung des Unterprogramms INITT1 zur Initialisierung 
+tbd.
+
+\page "Compilersettings für Windows"
+## Setup der Entwickungsumgebung fuer Windows
+### MingGW fuer Windows 32bit und 64bit
+#### Grundkonfiguration der Entwicklungsumgebung (TDM und CodeBlocks)
+Es werden beide TDM-Toolchains (32bit und 64bit) installiert (z.B. nach C:\UsrProg\TDM-GCC-64 und C:\UsrProg\TDM-GCC-32). Dann in CodeBlocks unter
+Settings -> Compiler  bei Selected Compiler folgende Einträge vornehmen:
+- GNU GCC Compiler:\n 
+"Compiler Settings" -> "Compiler Flags" General\Target 64bit [-m64]\n
+" Toolchain executables" : C:\UsrProg\TDM-GCC-64
+- GNU Fortran Compiler:\n
+"Compiler Settings" -> "Other Compiler options": -m64\n
+"Toolchain executables" : C:\UsrProg\TDM-GCC-64
+
+Zur Erzeugung der 32bit Version müssen lediglich die globalen GCC Settings entsprechend geändert werden. Die 32-bit-Einstellungen werden in CodeBlocks als neue Compiler definiert und entsprechend in den Projektdateien bei SDL32 und SDL64 unterschieden.
+
+Fortran2008 Module werden in der CodeBlocks IDE über die Voreinstellungen in dem Objektverzeichnis abgelegt. Bei einer Neukompilation wird dieses Verzeichnis bereinigt und dabei werden  alle *.mod Dateien gelöscht. -> Bei Aufteilung der zu entwickelnden Unterprogrammbibliothek (Graph2D) und dem Testprogramm (wxDemo) problematisch. Deswegen wird das IDE-Setting so geändert, dass die *.mod-Dateien neben den Sourcedateien erzeugt werden (GCC Parameter -J):\n
+Compiler Settings -> GlobalCompilerSettings -> SelectedCompiler:GNU FortranCompiler -> OtherSettings -> AdvancedOptions -> Command:CompileSingleFileToObjectFile -> -J $objects_output_dir -> LÖSCHEN!\n
+Bei dem in einem anderen Ordner befindlichen Testprogramm kann jetzt über die Projekteinstellungen der Parameter -J entsprechend gesetzt werden. Ohne das vorherige Löschen aus den IDE-Settings würde gfortran mit zwei widersprüchlichen -J-Parametern aufgerufen werden -> gfortran bräche dann die Kompilation mit einer Fehlermeldung  ab.
+
+### OpenSource Bibliotheken
+
+tbd.
+\n\n
+
+
+### EINSTELLUNGEN FÜR EIGENE ANWENDERPROGRAMME
+
+#### Compilerschalter Fortran 64bit:
+- tbd.
+
+####Link
+- tbd.
+
+
+\page "Compilersettings für Linux"
+## tbd.
+
+
+\~english
+
+Graph2D is written in Fortran2008/FTN77 and ANSI C++11/C90. Compilation instructions are available for Windows (MinGW) under "Additional Information".
+\n\n
+
+### How to build the library:
+After copying the source files by "$getfiles.bat wx" into the /build subdirectory there are also the project files for CodeBlocks (Windows IDE) AND A LINUX BASHSCRIPT.
+\n\n
+  
+### Using the library:
+The main properties can be adjusted as follows:
+- Initialization: By the WINLBL subroutine and/or *.xml files.
+- Icons (Windows only): By linking a resource
+\n\n
+
+### Hardcopies
+generate proprietary ASCII-journalfiles with the default extension *.hdc.
+
+\page "Compilersettings for Windows"
+## Setup of the Windows IDE
+### MingGW for Windows 32bit and 64bit
+#### Basic Configuration (TDM and CodeBlocks)
+
+Install both TDM-Toolchains, for 32- and for 64-bit (e.g. in C:\UsrProg\TDM-GCC-64 and C:\UsrProg\TDM-GCC-32). 
+Then edit the following entries in CodeBlocks at Settings -> Compiler:
+- GNU GCC Compiler:\n 
+"Compiler Settings" -> "Compiler Flags" General\Target 64bit [-m64]\n
+" Toolchain executables" : C:\UsrProg\TDM-GCC-64
+- GNU Fortran Compiler:\n
+"Compiler Settings" -> "Other Compiler options": -m64\n
+"Toolchain executables" : C:\UsrProg\TDM-GCC-64
+
+In order to build 32bit programs the global GCC settings have to be changed accordingly. The 32bit settings define new compilers and can now be distinguished from the 64bit versions when used inside the 32bit workspaces.
+
+
+\n\n
+
+
+### Settings for own Applications
+
+#### Fortran 64bit Compilerswitches:
+- tbd.
+
+####Link
+- tbd.
+
+\page "Compilersettings for Linux"
+## tbd.
+
+\~
+*/

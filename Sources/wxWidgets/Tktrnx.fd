@@ -1,0 +1,56 @@
+!> \file Tktrnx.fd
+!> \brief   wX Port: TCS Common Block TKTRNX
+!> \version 1.0
+!> \author  Dr.-Ing. Klaus Friedewald
+!> \~german
+!> Header passend zu TKTRNX.hpp. Das Quelltextformat ist sowohl zum FTN77 Fixed
+!> Format als auch zum Ftn08 Free Format kompatibel.
+!> \note
+!> Da die folgende Definition kein Bestandteil eines Moduls
+!> ist, versagt der DOXYGEN-Parser bei der Kombination von
+!> COMMON und INTEGER. Workaraound: \\cond ... \\endcond.
+!> \~english
+!> Header belonging to TKTRNX.hpp. The Source Format complies to the
+!> requirements of FTN77 Fixed Formar as well as Fortran08 Free Form.
+!> \note
+!> Because the following definition not being part of a module, the
+!> DOXYGEN parser is not able to handle the combination of COMMON
+!> and INTEGER declarations.  Workaround: \\cond ... \\endcond.
+!> \~
+!> \cond
+
+      use iso_c_binding, only: c_int, c_float, c_sizeof
+
+      integer (c_int)                                                   &
+     & khomey,                                                          &
+     & khorsz,kversz,                                                   &
+     & kitalc,ksizef,                                                   &
+     & klmrgn,krmrgn, kScrX,kScrY,                                      &
+     & kbeamx,kbeamy,                                                   &
+     & kminsx,kminsy,kmaxsx,kmaxsy
+      real (c_float)                                                    &
+     & tminvx,tminvy,tmaxvx,tmaxvy,                                     &
+     & trcosf,trsinf,trscal,                                            &
+     & xfac,yfac,xlog,ylog
+      integer (c_int)                                                   &
+     & kStCol,                                                          &
+     & iLinCol, iBckCol, iTxtCol
+
+
+       COMMON /TKTRNX/                                                  &
+     & khomey,                                                          &
+     & khorsz,kversz,                                                   &
+     & kitalc,ksizef,                                                   &
+     & klmrgn,krmrgn, kScrX,kScrY,                                      &
+     & kbeamx,kbeamy,                                                   &
+     & kminsx,kminsy,kmaxsx,kmaxsy,tminvx,tminvy,tmaxvx,tmaxvy,         &
+     & trcosf,trsinf,trscal,                                            &
+     & xfac,yfac,xlog,ylog,kStCol,                                      &
+     & iLinCol, iBckCol, iTxtCol
+
+      SAVE /TKTRNX/
+      BIND (C, name='tktrnx_') :: /TKTRNX/
+
+!> \endcond
+
+

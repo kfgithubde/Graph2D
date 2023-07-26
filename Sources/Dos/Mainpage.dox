@@ -20,23 +20,23 @@ graphlib.lng: Uebersetzte Meldungen des Graphiksystems \n
 
 Hardcopies werden als Standard-*.bmp Dateien ausgegeben.
 \~english
-Graphic Driver for DOS
+Graphics Driver for DOS
 
-The library was developed with the Microsoft FTN-77 compiler and MASM assembler, basing on the CP/M version.
-In the beginning the basic graphic library graphics.lib was used, which was part of the MS-compiler package.
-Later on the system was ported to the free Open Watcom compiler/assembler and its library graph.lib. 
-In order to keep the ability to use the MS-compiler, the include files fgraph.fd and fgraph.fi adjust the relevant procedure calls to the Watcom-library.
+The library was developed with the Microsoft FTN-77 compiler and the MASM assembler, based on the CP/M version.
+In the beginning the basic graphics library graphics.lib, which was part of the MS compiler package, was used .
+Later, the system was ported to the free Open Watcom compiler/assembler and its graph.lib library. 
+To keep the ability to use the MS-compiler, the include files fgraph.fd and fgraph.fi adapt the correspondent procedure calls to the Watcom library.
 
 How to build the library: \n
-Copy the sources into the /build subdirectory by invoking "$getfiles.bat DOS" and use the Watcom-Workspace files.
+Copy the sources to the /build subdirectory by running "$getfiles.bat DOS" and use the Watcom workspace files.
   
-Using the library: \n
-After building the library and linking it to the applications, the main characteristics could be changed by the following files: \n
+How to use the library: \n
+After building the library and linking it to the applications, the main features could be changed by the following files: \n
 graphlib.fon: Fontfile for the graphic text \n
 graphlib.lng: Translations of the messages \n
 
 
-Hardcopies are generated as standard *.bmp-files.
+Hardcopies are created as standard *.bmp-files.
 
 \~
 */

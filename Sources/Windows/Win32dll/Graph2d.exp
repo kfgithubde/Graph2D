@@ -203,11 +203,15 @@
     SUBSTITUTE,
 
     NUMSETC,
+    IFORMC,
+    FFORMC,
     FONLYC,
     EFORMC,
     EXPOUTC,
     ALFSETC,
     NOTATEC,
+    VLABLC,
     JUSTERC,
 	
+    WINSELECT,
 	GETHDC

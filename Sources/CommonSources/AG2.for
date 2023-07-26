@@ -1,6 +1,6 @@
 C> \file       AG2.for
 C> \brief      Graph2D: Tektronix Advanced Graphing II Emulation
-C> \version    (2022,284, x)
+C> \version    (2023,135, x)
 C> \author     (C) 2022 Dr.-Ing. Klaus Friedewald
 C> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 C>
@@ -96,8 +96,8 @@ C
       integer ilevel(3)
 
       call TCSLEV (ilevel) ! level(3)= System aus TCS
-      ilevel(1)=2022       ! Aenderungsjahr
-      ilevel(2)= 284       ! Aenderungstag
+      ilevel(1)=2023       ! Aenderungsjahr
+      ilevel(2)= 135       ! Aenderungstag
       return
       end
 
@@ -1401,7 +1401,6 @@ C
       end
 
 
-
       subroutine YMDYD (iJulYrOut,iJulDayOut,
      1                               iGregYrIn,iGregMonIn,iGregDayIn)
       implicit none
@@ -1427,7 +1426,7 @@ C
       if (iMon .gt.2) iJulDayOut= iJulDayOut + LEAP(iJulYrOut)
       return
 
-
+C> entry subroutine YMDYD (iJulYrIn,iJulDayIn,iGregYrOut,iGregMonOut,iGregDayOut)
       entry YDYMD (iJulYrIn,iJulDayIn,
      1                        iGregYrOut,iGregMonOut,iGregDayOut)
 

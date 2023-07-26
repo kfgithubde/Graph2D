@@ -11,7 +11,7 @@ sich dort auch die Projektdateien für CodeBlocks (Windows IDE) und ein Linux Bas
 
 ### Verwendung der Graphikbibliothek:
 Die Haupteigenschaften können folgendermaßen angepasst werden:
-- Initialisierung: Durch das Unterprogramm WINLBL oder *.xml-Dateien
+- Initialisierung: Durch das Unterprogramm WINLBL und/oder *.xml-Dateien
 - Icons (nur bei Windows): Durch Linken einer Resource
 \n\n
 
@@ -110,30 +110,30 @@ Jetzt erzeugen der Library und der Demoprogramme:
 
 \~english
 
-Graph2D is completly written in FTN77 and ANSI C90. Detailed compiling instructions are available for Windows (MinGW) and Debian (Raspberry Pi).
+Graph2D is completely written in FTN77 and ANSI C90. Detailed compilation instructions are available for Windows (MinGW) and Debian (Raspberry Pi).
 \n\n
 
 ### How to build the library:
-Copy the sources into the /build subdirectory by invoking "$getfiles.bat sdlxx".
-Then use the workspace files for CodeBlocks (Windows IDE) or the bashscript for Linux.
+Copy the sources into the /build subdirectory by running "$getfiles.bat sdlxx".
+Then use the workspace files for CodeBlocks (Windows IDE) or the bash script for Linux.
 \n\n
   
 ### Using the library:
-After building the library and linking it to an application, the main characteristics could be changed by the following files: 
-- Initialization: by calling subroutine WINLBL or using *.xml files 
+After building the library and linking it to an application, the main properties could be changed by the following files: 
+- Initialization: by calling the WINLBL subroutine and/or using *.xml files 
 - Icons (Windows only): by linking against a resource
 \n\n
 
 ### Hardcopies
-generate proprietary ASCII-journalfiles with the default extension *.hdc.
+create proprietary ASCII journal files with the default *.hdc extension.
 
-\page "Compilersettings for Windows"
-## Setup of the Windows IDE
+\page "Compiler Settings for Windows"
+## Setting up the Windows IDE
 ### MingGW for Windows 32bit and 64bit
-#### Basic Configuration (TDM and CodeBlocks)
+#### Basic configuration (TDM and CodeBlocks)
 
-Install both TDM-Toolchains, for 32- and for 64-bit (e.g. in C:\UsrProg\TDM-GCC-64 and C:\UsrProg\TDM-GCC-32). 
-Then edit the following entries in CodeBlocks at Settings -> Compiler:
+Install both TDM Toolchains, for 32-bit and for 64-bit (e.g. in C:\UsrProg\TDM-GCC-64 and C:\UsrProg\TDM-GCC-32). 
+Then edit the following entries in CodeBlocks under Settings -> Compiler:
 - GNU GCC Compiler:\n 
 "Compiler Settings" -> "Compiler Flags" General\Target 64bit [-m64]\n
 " Toolchain executables" : C:\UsrProg\TDM-GCC-64
@@ -141,9 +141,9 @@ Then edit the following entries in CodeBlocks at Settings -> Compiler:
 "Compiler Settings" -> "Other Compiler options": -m64\n
 "Toolchain executables" : C:\UsrProg\TDM-GCC-64
 
-In order to build 32bit programs the global GCC settings have to be changed accordingly. The 32bit settings define new compilers and can now be distinguished from the 64bit versions when used inside the 32bit workspaces.
+To build 32bit programs, the global GCC settings must be changed accordingly. The 32bit settings define new compilers and can now be distinguished from the 64bit versions when used within the 32bit workspaces.
 
-### Building the OpenSource libraries SDL2, SDL2_ttf, miniXML und sglib
+### Building the open source libraries SDL2, SDL2_ttf, miniXML and sglib
 Building and storing of the binaries in /OpenContent/binaries/gcc is only necessary once, and only if a new compiler is used.
 \n\n
 
@@ -157,7 +157,7 @@ SDL2_ttf: Unzip SDL2_ttf-devel-x.y.z-mingw.tar.gz (currently version 2.0.18) and
 - SDL2_ttf-2.0.18\i686-w64-mingw32\bin\SDL2_ttf.dll, zlib1.dll, libfreetype-6.dll ->TekLib\OpenContent\binaries\gcc\lib
 - SDL2_ttf-2.0.18\i686-w64-mingw32\lib\SDL2\libSDL2_ttf.a, libSDL2_ttf.dll.a -> TekLib\OpenContent\binaries\gcc\lib
 
-MiniXML: Compilation uses a MSYS-Terminal, seperately for 32- and 64-bit.
+MiniXML: Compilation uses a MSYS Terminal, seperate for 32-bit and 64-bit.
 - Unzip mxml-x.y.zip
 - $ cd /home/mxml-x.y
 - $ ./configure --help 
@@ -168,51 +168,51 @@ MiniXML: Compilation uses a MSYS-Terminal, seperately for 32- and 64-bit.
 - $ make
 - $ make test
 - $ exit
-- Copy (inside MS Windows):\n
+- Copy (within MS Windows):\n
   mxml.h -> TekLib\OpenContent\binaries\gcc\include\n
   libmxml.a, (libmxml1.a, mxml1.dll) ->TekLib\OpenContent\binaries\gcc\lib\n
 - Copy the documentation:\n
   mxml.html, mxml-cover.png -> TekLib\OpenContent\docs\Mini-XML
 
-sglib: This is a macro-library, no compilation is necessary
-- Copy the file "sglib.h" into the /include-directories.
+sglib: This is a macro library, no compilation is required.
+- Copy the file "sglib.h" into the /include directories.
 - Copy the file "index.html" -> TekLib\OpenContent\docs\sglib
 \n\n
 
 
-### Settings for own Applications
+### Settings for custom applications
 #### Fortran 32bit Compilerswitches:
 - maximum -O1 optimization for compililing the library is possible. If -O2 and -O3 (higher speed) or -Os (size) are used, the labels of the sample program AG2DEMO4 are not drawn at the axis!
 - "Strip all symbols from binary [-s]" is possible.
 #### Fortran 64bit Compilerswitches:
-- maximum -O2 optimization for compililing the library is possible. If -O3 (higher speed) or -Os (size) are used, the labels of the sample program AG2DEMO4 are not drawn at the axis!
+- maximum -O2 optimization for compililing the library is possible. If -O3 (higher speed) or -Os (size) are used, the labels of the sample program AG2DEMO4 are not drawn on the axis!
 - "Strip all symbols from binary [-s]" is possible.
 ####Link
-- static: enables executing of the programs on machines without MinGW installed.
+- static: allows to run the programs on machines without MinGW installed.
 
-\page "Compilersettings for Linux"
+\page "Compiler settings for Linux"
 ## Raspberry Pi with Debian 11 (Bullseye)
 ### Preparing the OS
 Basic installation: Raspberry Pi OS with desktop, Debian Version 11 (Bullseye), 32-bit
 
-Installation Fortran:
+Install Fortran:
 - # sudo apt-get update
 - # sudo apt-get upgrade
 - # sudo apt-get install gfortran
 
-Installation SDL2 (apt-get install libsdl2 unnecessary, already part of the standard distribution):
+Install SDL2 (apt-get install libsdl2 unnecessary, already part of the standard distribution):
 - # sudo apt-get install libsdl2-dev
 - # sudo apt-get install libsdl2-ttf-dev
 
-Installation MiniXML:
+Install MiniXML:
 - # sudo apt-get install libmxml-dev
 
-### Compilation
+### Compiling
 
-Copy the directory Teklib\Build to the target machine. Set the batchfile executable:
+Copy the Teklib\Build directory to the target machine. Make the batch file executable:
 - # chmod 755 build.sh
 
-Build the library and the example programs:
+Build the library and example programs:
 - # ./build.sh
 
 \~

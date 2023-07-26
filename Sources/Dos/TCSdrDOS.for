@@ -795,12 +795,21 @@ C
       end
 
 C
-C  Dummyroutinen
+C>  Entry Dummyroutinen
 C
-
       subroutine  AnMode
+C> AlfMod
       entry       AlfMod
+C> pClipt
       entry       pClipt
+C> ioWait
       entry       ioWait
       return
       end
+
+
+	  
+      logical function WINselect (iDummy)
+	  WINselect= .false.
+	  return
+	  end

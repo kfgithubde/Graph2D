@@ -16,3 +16,4 @@ del *.hdc
 rmdir /S /Q obj
 rmdir /S /Q Output
 rmdir /S /Q DoxOut
+rmdir /S /Q wxDemo

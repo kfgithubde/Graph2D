@@ -1,34 +1,37 @@
 ## Programming Interface
 
-Described here are the extensions of the original AG II library. Port specific details are documented seperately:
+Described here are the extensions of the original AG II library. Port-specific details are documented separately:
 
 * [CP/M](./Doxygen/CPMdox-en.pdf)
 * [DOS](./Doxygen/DOSdox-en.pdf)
 * [Windows](./Doxygen/WINdox-en.pdf)
 * [SDL2 (MinGW and LINUX)](./Doxygen/SDLdox-en.pdf)
-* wX: in development
+* [wX (CodeBlocks/MinGW)](./Doxygen/wXdox-en.pdf)
 
-### Fortran 77 Charactervariables
+### Fortran 77 Character Variables
 
-Since the change from CP/M to DOS, MS-Fortran supports the Fortran 77 standard. This led to some extensions and modifications of the original FORTRAN IV API.
+Since the switch from CP/M to DOS, MS-Fortran supports the Fortran 77 standard. This led to some extensions and modifications of the original FORTRAN IV API.
 
-The usage of the subroutines remains as described in the manuals. Merely direct manipulation of the common block should be avoided, although  subroutines SAVCOM, RESCOM, IBASEX(0), IBASEY(0) and IOTHER are supported nevertheless. The leap year correction LEAP has been extended into a function, in order to isolate the common block:
+The use of the subroutines remains as described in the manuals. However, direct manipulation of the common block should be avoided, although  the subroutines SAVCOM, RESCOM, IBASEX(0), IBASEY(0) and IOTHER are still supported. The leap year correction LEAP has been extended to a function, in order to isolate the common block:
 
 - integer function LEAP (iyear): =1 in case of a leap year, otherwise =0.
 
-Due to the fact that there is no standard for implementing FORTRAN IV holerith variables (4Habcd could be interpreted as packed integer, integer array(4) or as character), the following changes were necessary:
+Due to the fact that there is no standard for the implementing of FORTRAN IV holerith variables (4Habcd could be interpreted as packed integer, integer array(4) or as character), the following changes were necessary:
 
- - subroutine PLACE (lit): lit is interpreted as integer only, the usage of 'STD', 'UPH' is deprecated.
- - uper and lower index are now signalized by the special characters SOH=char(1) and STX=char(2) instead of -1 and -2.
+ - Subroutine PLACE (lit): lit is interpreted as integer only, the use of 'STD', 'UPH' is deprecated.
+ - The upper and lower index are now indicated by the special characters SOH=char(1) and STX=char(2) instead of -1 and -2.
  
-In addition to the subroutines dealing with strings represented in integer arrays, character based alternatives are available:
+In addition to the subroutines dealing with strings represented in integer arrays, character-based alternatives are available:
 
 - subroutine NUMSETC (fnum,nbase, outstr,fillstr)
+- subroutine IFORMC (fnum,iwidth, outstr)
+- subroutine FFORMC (fnum,iwidth, idec, outstr)
 - subroutine FONLYC (fnum,iwidth,idec, outstr,fillstr)
 - subroutine EFORMC (fnum,iwidth,idec, outstr,fillstr)
 - subroutine EXPOUTC (nbase,iexp, outstr,fillstr)
 - subroutine ALFSETC (fnum,iwidth,labtyp,outstr)
 - subroutine NOTATEC (ix,iy, string)
+- subroutine VLABLC (string)
 - subroutine JUSTERC (string, iPosFlag, iOff)
 - subroutine USESETC (fnum, iwidth, nbase, labstr)
 
@@ -120,6 +123,7 @@ integer iArr(3): Returns the version of the software. iArr(1)= year, iArr(2) day
 - 5: GCC (MinGW) running on 32bit Windows
 - 6: SDL2
 - 7: GCC (MinGW) running on 64bit Windows
+- 8: wX
 
 <br>
 
@@ -154,4 +158,4 @@ Plots the the ASCII-Hardcopyfile of Type 3 (Default in SDL and wX). Can be calle
 Originally used to grant Tektronix 4010 Terminals sufficient time in order to execute its commands in case of "fast" Terminal connections (9600 Baud). Now a call to ioWait() in some enviroments forces a redraw of the window.
 + CP/M, DOS, MS-Windows: Dummyroutine
 + SDL2: Forces a FLUSH BACKBUFFER. Rarely needed, because every change of the window and every input refreshes the window.
-+ wX: Draws the graph. A call to ioWait() is necessary at the end of each plotting routine, which is not terminated by a call to finitt(). 
++ wX: Draw the graph. A call to ioWait() is required at the end of each plot routine that is not terminated by a call to finitt(). 

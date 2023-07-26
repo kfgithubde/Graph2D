@@ -10,7 +10,7 @@ if /I "%1%" neq "" goto ParExists
  echo  GNU64 - stat. 64bit Windows Library fuer GNU-Compiler
  echo  SDL32 - stat. 32bit-Library fuer SDL2 unter MinGW/GCC und Hilfedateien
  echo  SDL64 - stat. 64bit-Library fuer SDL2 unter MinGW/GCC und Hilfedateien
- echo  wX    - stat. Library fuer wX, t.b.d.
+ echo  wX    - stat. Library fuer wX
  goto done
 
 :ParExists
@@ -146,13 +146,20 @@ if /I "%1%" neq "SDL64" goto NoSDL64
  copy D1.xml                            ..\..\Binaries\SDL2\64bit\Demo\*.*
  copy DoxOut\*.chm                      ..\..\Doc\DoxyGen
  copy DoxOut\SDLlatex-en\refman.pdf     ..\..\Doc\DoxyGen\SDLdox-en.pdf
- copy DoxOut\SDLdox-en\*.*              ..\..\Doc\DoxyGen\HTML\SDLdox-en
+ goto done
 :NoSDL64
 
 if /I "%1%" neq "wX" goto NowX
  echo Copying Files for wxWidgets Library
- echo Not Yet Implemented
  echo on
+ copy libgraph2d.a                      ..\..\Binaries\wX\64bit\*.*
+ copy Graph2DGerman.xml                 ..\..\Binaries\wX\64bit\*.*
+ copy ColourDemo.exe                    ..\..\Binaries\wX\64bit\Demo\*.*
+ copy wxDemo\wxDemo.exe                 ..\..\Binaries\wX\64bit\Demo\wxDemo\*.*
+ copy D?.exe                            ..\..\Binaries\wX\64bit\Demo\*.*
+ copy D1.xml                            ..\..\Binaries\wX\64bit\Demo\*.*
+ copy DoxOut\*.chm                      ..\..\Doc\DoxyGen
+ copy DoxOut\wXlatex-en\refman.pdf      ..\..\Doc\DoxyGen\wXdox-en.pdf
  goto done
 :NowX
 

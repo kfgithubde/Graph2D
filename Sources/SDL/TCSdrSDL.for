@@ -225,3 +225,11 @@ C> alpha
       entry       alpha
       return
       end
+
+
+	  
+      logical function WINselect (iDummy)
+	  WINselect= .false.
+	  return
+	  end
+	 
