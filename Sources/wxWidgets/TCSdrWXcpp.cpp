@@ -1,18 +1,20 @@
 /** ****************************************************************************
 \file       TCSdrWXcpp.cpp
 \brief      wX Port: Low-Level Driver
-\version    0.9
+\version    1.0
 \author     (C) 2023 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
          Systemnahe Graphikroutinen für die Tektronix Emulation
 \note \verbatim
-          1. ToDo
+          Unter wX können mehrere Zeichenfenster gleichzeitig verwendet werden,
+		  siehe das Beispiel wxDemo.
 \endverbatim
 \~english
          system-specific subroutines of the Tektronix emulation
 \note \verbatim
-          1. ToDo
+         Under wX several drawing windows can be used at the same time,
+		 see the example wxDemo.
 \endverbatim
 \~
 ***************************************************************************** */
@@ -31,7 +33,7 @@
 */
 
 // #include <wx/intl.h>
-// #include <wx/string.h>
+#include <wx/string.h>
 
 #include <wx/frame.h>      // needed for: class cTSCcanvas
 #include <wx/panel.h>
@@ -41,6 +43,13 @@
 
 #include <wx/dc.h>         // needed for: subroutine RepaintBuffer
 #include <wx/dcclient.h>
+
+#include <wx/dcsvg.h>
+
+#include <wx/image.h>     // needed for bitmap hardcopies (not for *.bmp)
+#include <wx/dcmemory.h>
+
+// #include <wx/metafile.h>
 
 #include <wx/log.h>        // needed for: subroutine TCSGraphicError
 #include <wx/msgdlg.h>
@@ -128,9 +137,8 @@ static char     szTCSWindowName[TCS_WINDOW_NAMELEN] = TCS_WINDOW_NAME,
                 szTCSstatWindowName[TCS_WINDOW_NAMELEN] = TCS_STATWINDOW_NAME,
                 szTCSIniFile[TCS_FILE_NAMELEN] = TCS_INIFILE_NAME,
                 szTCSHardcopyFile[TCS_FILE_NAMELEN] = TCS_HDCFILE_NAME,
-/*  129                 szTCSGraphicFont[TCS_FILE_NAMELEN] = TCS_INIDEF_FONT,
-  130                 szTCSSysFont[TCS_FILE_NAMELEN] = TCS_INIDEF_SYSFONT,
-*/
+//                szTCSGraphicFont[TCS_FILE_NAMELEN] = TCS_INIDEF_FONT,
+//                szTCSSysFont[TCS_FILE_NAMELEN] = TCS_INIDEF_SYSFONT,
                 szTCSsect0[TCS_FILE_NAMELEN] = TCS_INISECT0;
 
 
@@ -172,8 +180,8 @@ static  ErrMsg  szTCSErrorMsg[(int) MSG_MAXERRNO+1] =
                  TCS_INIDEF_JOUCREATE,     // Errno 15
                  TCS_INIDEF_JOUENTRY,      // Errno 16
                  TCS_INIDEF_JOUADD,        // Errno 17
-                 TCS_INIDEF_JOUCLR,        // Errno 18
-                 TCS_INIDEF_JOUUNKWN,      // Errno 19
+                 "JOUCLR unused",          // Errno 18
+                 "JOUUNKWN unused",        // Errno 19
                  TCS_INIDEF_XMLPARSER,     // Errno 20
                  TCS_INIDEF_XMLOPEN,       // Errno 21
                  TCS_INIDEF_UNKNAUDIO,     // Errno 22
@@ -199,8 +207,8 @@ static  ErrMsg  szTCSErrorMsg[(int) MSG_MAXERRNO+1] =
                  TCS_INIDEF_JOUCREATEL,    // Errno 15
                  TCS_INIDEF_JOUENTRYL,     // Errno 16
                  TCS_INIDEF_JOUADDL,       // Errno 17
-                 TCS_INIDEF_JOUCLRL,       // Errno 18
-                 TCS_INIDEF_JOUUNKWNL,     // Errno 19
+                 10,                       // Errno 18
+                 10,                       // Errno 19
                  TCS_INIDEF_XMLPARSERL,    // Errno 20
                  TCS_INIDEF_XMLOPENL,      // Errno 21
                  TCS_INIDEF_UNKNAUDIOL,    // Errno 22
@@ -343,6 +351,7 @@ void RepaintBuffer (wxDC& dc)
                                        wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false);
           ActiveCanvas->TCSfont.SetFractionalPointSize (TEK_YMAX*TCS_REL_CHR_HEIGHT*(1+tktrnx_.ksizef));
           dc.SetFont(ActiveCanvas->TCSfont);
+          dc.SetTextForeground (TCSColorTable[tktrnx_.iTxtCol]);
 
           dc.GetTextExtent ("MMMMMMMMMM", &w, &h);
           tktrnx_.khorsz = (int) (w*0.1+0.5);
@@ -524,12 +533,9 @@ void PresetProgPar ()
     TCSwindowIniXrelsiz= TCS_INIDEF_WINSIZX;
     TCSwindowIniYrelsiz= TCS_INIDEF_WINSIZY;
 
-    strncpy (szTCSWindowName, TCS_WINDOW_NAME, TCS_WINDOW_NAMELEN);
-    strncpy (szTCSstatWindowName, TCS_STATWINDOW_NAME, TCS_WINDOW_NAMELEN);
-    strncpy (szTCSIniFile, "", TCS_FILE_NAMELEN);
-    strncpy (szTCSsect0, TCS_INISECT0, TCS_FILE_NAMELEN);
+    // No reset of windownames and initialisation files
 
-    // No Reset of Hardcopyname and Counter
+    // No reset of hardcopyname and counter
 
     // Error messages should be changed only once
 
@@ -555,12 +561,12 @@ void CustomizeProgPar ()
       strncpy (TmpStr, szTCSWindowName, TMPSTRLEN);
       wxTmpFilNam= wxStandardPaths::Get().GetExecutablePath();
       wxTmpStr= wxTmpFilNam.GetFullName();
-      iL= szTemp-szTCSWindowName;
+      iL= szTemp-szTCSWindowName+1;
       if ((TCS_WINDOW_NAMELEN-iL) > 1) {
         strncpy (szTemp, wxTmpStr, TCS_WINDOW_NAMELEN-iL);
         if ((TCS_WINDOW_NAMELEN-iL-wxTmpStr.length()) > 1) {
-          strncpy (&szTCSWindowName[iL+wxTmpStr.length()],
-                   &TmpStr[iL+strlen(PROGDIRTOKEN)], TCS_WINDOW_NAMELEN-iL-wxTmpStr.length());
+          strncpy (&szTCSWindowName[iL+wxTmpStr.length()-1],
+                   &TmpStr[iL+strlen(PROGDIRTOKEN)-1], TCS_WINDOW_NAMELEN-iL-wxTmpStr.length());
         }
       }
       szTCSWindowName[TCS_WINDOW_NAMELEN-1]= '\0'; // just in case...
@@ -610,7 +616,7 @@ void XMLreadProgPar (const char * filname)
       if (NodeSect0 != nullptr) {
         node1= NodeSect0->GetChildren();
         while (node1 != nullptr) {
-          if (node1->GetName().IsSameAs(TCS_INISECT1)) {
+          if (node1->GetName().IsSameAs(TCS_INISECT1)) { // TCS_INISECT1: Names
             node= node1->GetChildren();
             while (node != nullptr) {
               if (node->GetName().IsSameAs(TCS_INIVAR_WINNAM)) {
@@ -624,6 +630,12 @@ void XMLreadProgPar (const char * filname)
                 if (iL > 0) {
                   wxTmpStr= node->GetNodeContent().Truncate(TCS_WINDOW_NAMELEN);
                   strncpy (szTCSstatWindowName, wxTmpStr.c_str(), TCS_WINDOW_NAMELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_HDCNAM)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_FILE_NAMELEN);
+                  strncpy (szTCSHardcopyFile, wxTmpStr.c_str(), TCS_FILE_NAMELEN);
                 }
               }
               node= node->GetNext();
@@ -679,10 +691,148 @@ void XMLreadProgPar (const char * filname)
                 if (wxTmpStr.IsNumber()) {
                   TCSDefaultBckCol= wxAtoi(wxTmpStr);
                 }
-
               }
               node= node->GetNext();
             } // end dataloop TCS_INISECT2
+          } else if (node1->GetName().IsSameAs(TCS_INISECT3)) { // TCS_INISECT3: Messages
+            node= node1->GetChildren();
+            while (node != nullptr) {
+              wxTmpStr= node->GetNodeContent();
+              if (node->GetName().IsSameAs(TCS_INIVAR_HDCOPN)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[WRN_HDCFILOPN], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_HDCOPNL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[WRN_HDCFILOPN]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_HDCWRT)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[WRN_HDCFILWRT], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_HDCWRTL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[WRN_HDCFILWRT]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_USR)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[MSG_USR], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_USRL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[MSG_USR]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_HDCACT)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[MSG_HDCACT], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_HDCACTL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[MSG_HDCACT]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_USRWRN)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[WRN_USRPRESSANY], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_USRWRNL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[WRN_USRPRESSANY]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_EXIT)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[ERR_EXIT], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_EXITL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[ERR_EXIT]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_JOUCREATE)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[WRN_JOUCREATE], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_JOUCREATEL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[WRN_JOUCREATE]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_JOUENTRY)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[WRN_JOUENTRY], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_JOUENTRYL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[WRN_JOUENTRY]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_JOUADD)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[WRN_JOUADD], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_JOUADDL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[WRN_JOUADD]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_XMLOPEN)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[ERR_XMLOPEN], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_XMLOPENL)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[ERR_XMLOPEN]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_USR2)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[MSG_USR2], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_USR2L)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[MSG_USR2]= wxAtoi(wxTmpStr);
+                }
+
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_INI2)) {
+                iL= node->GetNodeContent().length();
+                if (iL > 0) {
+                  wxTmpStr= node->GetNodeContent().Truncate(TCS_MESSAGELEN);
+                  strncpy (szTCSErrorMsg[WRN_INI2], wxTmpStr.c_str(), TCS_MESSAGELEN);
+                }
+              } else if (node->GetName().IsSameAs(TCS_INIVAR_INI2L)) {
+                if (wxTmpStr.IsNumber()) {
+                  TCSErrorLev[WRN_INI2]= wxAtoi(wxTmpStr);
+                }
+
+              }
+              node= node->GetNext();
+            } // end dataloop TCS_INISECT3
           }
           node1= node1->GetNext();
         }
@@ -870,10 +1020,15 @@ void cTCScanvas::OnTCSmouseRight(wxMouseEvent& event)
 
 extern "C" {
     void winlbl0 (const char PloWinNam[], const char StatWinNam[], const char IniFilNam[])
+#if (TCS_WINDOW_NAMELEN <= TCS_FILE_NAMELEN) // Get a safe buffer
+  #define TMPSTRLEN TCS_FILE_NAMELEN
+#else
+  #define TMPSTRLEN TCS_WINDOW_NAMELEN
+#endif
     {
       size_t iL;
       char* szTemp;
-      char  tmpstr[TCS_FILE_NAMELEN], PathSeparator[2];
+      char  tmpstr[TMPSTRLEN], PathSeparator[2];
 
         iL= strlen(PloWinNam);
         if (iL > (TCS_WINDOW_NAMELEN-1)) iL= TCS_WINDOW_NAMELEN-1;
@@ -904,6 +1059,7 @@ extern "C" {
         if (iL > 0) {
           szTemp= strstr (szTCSIniFile, INIFILEXTTOKEN); // Default extension?
           if (szTemp != 0) {
+            iL= TCS_FILE_NAMELEN + szTCSIniFile-szTemp;
             strncpy (szTemp, INIFILEXT, iL); // Sideeffect: szTCSIniFile with extension
             szTCSIniFile[TCS_FILE_NAMELEN-1]= '\0'; // just in case...
           }
@@ -911,18 +1067,20 @@ extern "C" {
         iL= strlen(szTCSIniFile); // perhaps extended by .% processing
         if (iL > 0) {
           szTemp= strstr (szTCSIniFile, PROGDIRTOKEN); // Default ProgDir?
-          if (szTemp != 0) {
+          if (szTemp == szTCSIniFile) {
             strncpy (tmpstr, szTCSIniFile, TCS_FILE_NAMELEN);
             strncpy (szTCSIniFile, wxStandardPaths::Get().GetDataDir(), TCS_FILE_NAMELEN);
+            iL= strlen(szTCSIniFile);
             PathSeparator[0]= wxFileName::GetPathSeparator();
             PathSeparator[1]= char (0);
-            strncpy (&szTCSIniFile[iL], PathSeparator, TCS_FILE_NAMELEN-iL);
+            strncpy (&szTCSIniFile[iL], PathSeparator, TCS_FILE_NAMELEN-iL-2); // -2: length Path separator
             iL= strlen(szTCSIniFile);
             strncpy (&szTCSIniFile[iL], &tmpstr[strlen(PROGDIRTOKEN)], TCS_FILE_NAMELEN-iL);
             szTCSIniFile[TCS_FILE_NAMELEN-1]= '\0'; // just in case...
           }
         }
      }
+#undef TMPSTRLEN
 }
 
 
@@ -1339,9 +1497,9 @@ extern "C" {
 extern "C" {
     void DEFAULTCOLOUR (void)
     {
-      lincol_ (&TCSDefaultLinCol);
-      txtcol_ (&TCSDefaultTxtCol);
-      bckcol_ (&TCSDefaultBckCol);
+      LINCOL (&TCSDefaultLinCol);
+      TXTCOL (&TCSDefaultTxtCol);
+      BCKCOL (&TCSDefaultBckCol);
     }
 }
 
@@ -1512,10 +1670,11 @@ extern "C" {
       int i; // Dummyparameter
 
         snprintf( cBuf, TCS_MESSAGELEN, szTCSErrorMsg[iErr], msg );
-        if (ActiveCanvas == nullptr) {
-          wxLogStatus (cBuf); // TCS not initialized
+        if (ActiveCanvas == nullptr) { // TCS not initialized
+          if  (TCSErrorLev[iErr] > 0) wxLogStatus (cBuf);
+          return;
         } else {
-            if (ActiveCanvas->TCSstatusBar == nullptr) {
+            if ((ActiveCanvas->TCSstatusBar == nullptr) && (TCSErrorLev[iErr] > 0))  {
               wxLogStatus (cBuf); // no own space for logging
             } else {
                if (TCSErrorLev[iErr] > 0) {
@@ -1603,22 +1762,65 @@ extern "C" {
         if (iHardcopyCount >= MAX_HDCCOUNT) {
           TCSGraphicError (WRN_HDCFILOPN, "???"); // no unused filename
         }
-        if (!HDCfile.Open (FilNam, wxFile::write, wxS_DEFAULT) ) {
-          TCSGraphicError (WRN_HDCFILOPN, FilNam.c_str()); // error during open
-        };
-
         TCSGraphicError (MSG_HDCACT, FilNam.c_str());
-        SGLIB_DL_LIST_GET_LAST(xJournalEntry_typ, ActiveCanvas->xTCSJournal, previous, next, xJournalEntry)
-        while (xJournalEntry != NULL) {
-          TmpString.Printf("%02i#%04i-%03i\n", xJournalEntry->action, xJournalEntry->i1, xJournalEntry->i2);
-          if (!HDCfile.Write (TmpString) ) {
-            TCSGraphicError (WRN_HDCFILWRT, FilNam.c_str());
+
+        if (FilNam.Lower().EndsWith(".hdc")) { // ------ *.hdc -----> Journal File
+          if (!HDCfile.Open (FilNam, wxFile::write, wxS_DEFAULT) ) {
+            TCSGraphicError (WRN_HDCFILOPN, FilNam.c_str()); // error during open
+          };
+
+          SGLIB_DL_LIST_GET_LAST(xJournalEntry_typ, ActiveCanvas->xTCSJournal, previous, next, xJournalEntry)
+          while (xJournalEntry != NULL) {
+            TmpString.Printf("%02i#%04i-%03i\n", xJournalEntry->action, xJournalEntry->i1, xJournalEntry->i2);
+            if (!HDCfile.Write (TmpString) ) {
+              TCSGraphicError (WRN_HDCFILWRT, FilNam.c_str());
+            }
+            xJournalEntry= xJournalEntry -> previous;
           }
-          xJournalEntry= xJournalEntry -> previous;
-        }
-        HDCfile.Close();
-    }
-}
+          HDCfile.Close();
+
+
+        } else if (false) { // ------ *.svg -----> Vector Hardcopy
+          wxSVGFileDC dc(FilNam, TEK_XMAX, TEK_YMAX);
+          dc.SetAxisOrientation (true, true);      // y-axis bottom->up
+          dc.SetDeviceOrigin (0., -TEK_YMAX);      // (0,0) lower left corner
+          RepaintBuffer (dc); // Bug in wx V3.1.5: Text will plotted upside down !!!
+
+//      } else if (false) { // ------ *.wmf -----> Windows Metafile
+//        wxMetafileDC dc(FilNam, TEK_XMAX, TEK_YMAX);
+//        dc.SetAxisOrientation (true, true);      // y-axis bottom->up
+//        dc.SetDeviceOrigin (0., -TEK_YMAX);  // (0,0) lower left corner
+//           dc.SetBrush (*wxWHITE_BRUSH); // Testplot works
+//           dc.Clear();
+//           dc.SetPen (*wxBLACK_PEN);
+//           dc.DrawRectangle (10,10,40,40);
+//        RepaintBuffer (dc); // Doesn't work: textmeasure.cpp must not be used with non-native wxDCs
+//        dc.Close();
+
+        } else if (FilNam.Lower().EndsWith(".bmp") ||
+                   FilNam.Lower().EndsWith(".jpg") ) { // ------ *.??? -----> Bitmaps
+          wxBitmap *PixelMap= new wxBitmap (TEK_XMAX, TEK_YMAX, wxBITMAP_SCREEN_DEPTH);
+          wxMemoryDC dc;
+          dc.SelectObject (*PixelMap);
+
+          dc.SetAxisOrientation (true, true); // y-axis bottom->up
+          dc.SetDeviceOrigin (0., TEK_YMAX);  // Origin moved in unmodified axis orientation!
+          RepaintBuffer (dc);
+          dc.SelectObject (wxNullBitmap); // unlock bitmap
+
+          if (FilNam.Lower().EndsWith(".bmp")) {
+            PixelMap->SaveFile (FilNam, wxBITMAP_TYPE_BMP, (wxPalette*)NULL);
+          } else if (FilNam.Lower().EndsWith(".jpg")) {
+            if (wxImage::FindHandler(wxBITMAP_TYPE_JPEG) == nullptr) {
+              wxImage::AddHandler(new wxJPEGHandler);
+            }
+            PixelMap->SaveFile (FilNam, wxBITMAP_TYPE_JPEG , (wxPalette*)NULL);
+          }
+          delete PixelMap;
+
+        } // Last format of hardcopies
+    } // End of subroutine
+} // End of extern "C"
 
 
 

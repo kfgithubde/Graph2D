@@ -19,7 +19,7 @@ The additional subroutines dealing with windows, colors, hardcopies etc. are des
 
 ## Installation
 
-The /Binaries subdirectory contains pre-compiled libraries, along with examples for initialization and font files. You will also find there executables of some demonstration programs, as described in the manuals.
+The /Binaries subdirectory contains ready-to-use libraries, along with examples for initialization and font files. You will also find there executables of some demonstration programs, as described in the manuals.
 
 ## Build
 
@@ -30,7 +30,7 @@ Note: The batchfiles are protected against del \*.\* in the console, but not aga
 Copy the necessary files by executing getfiles.bat and selecting the correct development system. Valid options include:
 
 -	MINGW-GCC for 64/32 bit Windows, wxWidgets and SDL2 libraries  
-with Code::Blocks use Graph2D.workspace
+with Code::Blocks: use Graph2D.workspace
 -	Linux-GCC on Raspberry Pi: Copy and compile on the target machine
 -	Open Watcom for 32 and 16 bit win libraries (static and/or dynamic)  
 Project file: teklib.wpj. To buid the dynamic library, compile the targets using the following sequence: LnkFtn1.lib, graph2d.dll, graph2dd.lib, graph2du.dll.
@@ -45,4 +45,4 @@ Also included are some of the test files, as described in the AGII user manual.
 
 ## Open content
 
-Th sources of the public domain components used are stored in the /OpenContent directory, along with their licenses. Compiled versions and documentation can be found in the subdirectories /OpenContent/binaries and /OpenContent/docs.
+The sources of the public domain components used are stored in the /OpenContent directory, along with their licenses. Compiled versions and documentation can be found in the subdirectories /OpenContent/binaries and /OpenContent/docs.

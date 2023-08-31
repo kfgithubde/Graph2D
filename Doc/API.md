@@ -72,7 +72,8 @@ Colors are set by subroutines LINCOL(iCol), TXTCOL(iCol), BCKCOL(iCol) and Defau
 
 ### Hardcopies
 
-- SDL2 and wX: proprietary ASCII-Journalfile (*.hdc)
+- wX: *.hdc (Default), *.bmp or *.jpg - depending on file extension
+- SDL2: proprietary ASCII-Journalfile (*.hdc)
 - Windows: Windows Metafile (*.wmf) 
 - DOS: Bitmap (*.bmp)
 - CP/M: Bitmap (*.HDC)
@@ -107,14 +108,36 @@ character\*(\*) GraphLbl : Label of the graphic window\
 character\*(\*) StatLbl : Label of the status/message window\
 character\*(\*) IniFile : Name of the configuration file
 
-The windowlabel "~" generates a window without a headline (SDL2 only). The variable "%:" will be expanded to the fully qualified program name (MS Windows only).\
+The windowlabel "~" generates a window without a headline (SDL2 only). The variable "%:" will be expanded to the fully qualified program name (MS Windows and wX).\
 IniFile may contain the variables "%:"=program directory, ".%"=default extension, @RootNode(XML-files only), e.g. "%:MyInifile.%@g2d" will be translated to "c:/program/MyInifile.xml" and the XML-parser uses "\<g2d\>" as rootnode.
+
+The wx-Port allows the use of more than one window. To facilitate the call by c, the call by\
+ *void winlbl0 (const char GraphicWindowLabel[], const char StatusWindowLabel[], const char IniFilNam[]);*\
+is also possible here.
+
+<br>
+
+#### void init1  (iMode, parent, FrameToUse, StatusBarToUse)
+
+int iMode : Type of the new plot canvas\
+wxFrame* parent : parent window\
+wxFrame* FrameToUse : plot frame\
+wxStatusBar* StatusBarToUse\
+
+Create a new plot window (wX only).
+
+<br>
+
+#### logical function WINSELECT (iD)
+
+Selects Window iD for plotting. This call is functional under wX only, otherwise a dummystub. See example wxDemoMain.cpp for further information.
 
 <br>
 
 #### tcslev (iArr), ag2lev (iArr)
 
-integer iArr(3): Returns the version of the software. iArr(1)= year, iArr(2) day of release. iArr(3) defines the port:
+integer iArr(3): Returns the version of the software.\
+iArr(1)= year, iArr(2) day of release. iArr(3) defines the port:
 
 - 1: CP/M
 - 2: MS-DOS
@@ -158,4 +181,4 @@ Plots the the ASCII-Hardcopyfile of Type 3 (Default in SDL and wX). Can be calle
 Originally used to grant Tektronix 4010 Terminals sufficient time in order to execute its commands in case of "fast" Terminal connections (9600 Baud). Now a call to ioWait() in some enviroments forces a redraw of the window.
 + CP/M, DOS, MS-Windows: Dummyroutine
 + SDL2: Forces a FLUSH BACKBUFFER. Rarely needed, because every change of the window and every input refreshes the window.
-+ wX: Draw the graph. A call to ioWait() is required at the end of each plot routine that is not terminated by a call to finitt(). 
++ wX: Draws the graph. A call to ioWait() is required at the end of each plot routine that is not terminated by a call to finitt(). 

@@ -1,7 +1,7 @@
 /** ****************************************************************************
 \file      graph2d.h
 \brief     C/C++ API definitions
-\version   1.1
+\version   1.2
 \author    Dr.-Ing. Klaus Friedewald
 \copyright GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
@@ -312,7 +312,7 @@ void iowait_ (int* iWait);
 void lintrn_ (void);
 
 #define TCSLEV tcslev_
-void tcslev_ (int iLevel); // Array (Year, Day, System)
+void tcslev_ (int* iLevel); // Array (Year, Day, System)
 #define SVSTAT svstat_
 void svstat_ (char dst[]);
 #define RESTAT restat_

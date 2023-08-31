@@ -51,12 +51,6 @@
 		<G2dExit>Drücke eine beliebige Taste um das Programm zu verlassen.</G2dExit>
 		<G2dExitL>5</G2dExitL> 
 
-		<G2dNoMemory>Graph2D Clipboard Manager: nicht genügend Speicher verfügbar.</G2dNoMemory>
-		<G2dNoMemoryL>1</G2dNoMemoryL>
-
-		<G2dClipLock>Graph2D Clipboard Manager: Zwischenablage belegt.</G2dClipLock>
-		<G2dClipLockL>1</G2dClipLockL>
-
 		<G2dJouCreate>GRAPH2D Journal-File nicht erzeugt. Fehlernr.: %i.</G2dJouCreate>
 		<G2dJouCreateL>5</G2dJouCreateL>
 
@@ -66,8 +60,11 @@
 		<G2dJouAdd>GRAPH2D Listeneintrag nicht an Journal angehängt.</G2dJouAdd>
 		<G2dJouAddL>5</G2dJouAddL>
 
-		<G2dJouClr>GRAPH2D Fehler nach Löschen des Journaleintrages.</G2dJouClr>
-		<G2dJouClrL>5</G2dJouClrL> 
+		<G2dXMLerror>GRAPH2D Fehler in der XML-Datei: %s.</G2dXMLerror>
+		<G2dXMLerrorL>5</G2dXMLerrorL>
+
+		<G2dXMLopen>GRAPH2D Öffnen der XML-Datei %s fehlgeschlagen.</G2dXMLopen>
+		<G2dXMLopenL>0</G2dXMLopenL>
 
 		<G2dJouEntryUnknwn>GRAPH2D Unbekannter Action-Code im Journal.</G2dJouEntryUnknwn>
 		<G2dJouEntryUnknwnL>1</G2dJouEntryUnknwnL>

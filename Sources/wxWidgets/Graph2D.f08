@@ -1,30 +1,19 @@
 !> \file       Graph2D.f08
-!> \brief      wX Port: Interfacemodul
-!> \version    (2022,305,6)
+!> \brief      wX Port: Fortran Interfacemodul
+!> \version    0.7
 !> \author     (C) 2022 Dr.-Ing. Klaus Friedewald
 !> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 !>
 !> \~german
 !> wX-spezifische TCS-Routinen
 !> \note \verbatim
-!>    Erweiterungen gegenüber Tektronix:
-!>     subroutine TOUTSTC (String): Ausgabe Fortran-String
-!>     subroutine LINCOL (iCol): Setzen Linienfarbe (iCol=0..15)
-!>     subroutine TXTCOL (iCol): Setzen Textfarbe
-!>     subroutine BCKCOL (iCol): Hintergrundfarbe (nach ERASE sichtbar)
-!>     subroutine DefaultColour: Wiederherstellung Defaultfarben
+!>     Noch nicht vollstaendig
 !> \endverbatim
-!>
 !>
 !> \~english
 !> wX specific subroutines
 !> \note \verbatim
-!>    Supplement to Tektronix:
-!>     subroutine TOUTSTC (String): Ausgabe Fortran-String
-!>     subroutine LINCOL (iCol): Setzen Linienfarbe (iCol=0..15)
-!>     subroutine TXTCOL (iCol): Setzen Textfarbe
-!>     subroutine BCKCOL (iCol): Hintergrundfarbe (nach ERASE sichtbar)
-!>     subroutine DefaultColour: Wiederherstellung Defaultfarben
+!>    Not yet complete
 !> \endverbatim
 !> \~
 !>

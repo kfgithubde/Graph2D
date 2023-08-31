@@ -16,7 +16,7 @@ Die Haupteigenschaften können folgendermaßen angepasst werden:
 \n\n
 
 ### Hardcopies
-werden als proprietäres ASCII-Journalfile *.hdc ausgegeben. 
+werden standardmäßig als proprietäres ASCII-Journalfile *.hdc ausgegeben. Durch Änderung der Dateinamenerweiterung sind auch Ausgaben als Bitmap (*.bmp) und Jpeg (*.jpg) möglich. 
 
 
 \page "Initialisierung der Zeichenfenster"
@@ -77,7 +77,7 @@ The main properties can be adjusted as follows:
 \n\n
 
 ### Hardcopies
-generate proprietary ASCII-journalfiles with the default extension *.hdc.
+Default are proprietary ASCII-journalfiles with the default extension *.hdc. By choosing an other file extension bitmaps (*.bmp) and jpgs (*.jpg) are supported too.  
 
 \page "Compilersettings for Windows"
 ## Setup of the Windows IDE

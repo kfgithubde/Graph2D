@@ -1,7 +1,7 @@
 /** ****************************************************************************
 \file    TCSdrWXcpp.hpp
 \brief   WX Port: Headerfile
-\version 0.5
+\version 1.0
 \author  Dr.-Ing. Klaus Friedewald
 \~german
          Headerfile zu TCSdrWXcpp.cpp
@@ -131,7 +131,7 @@
     #define TCS_INIDEF_WINSIZX 98
  #define TCS_INIVAR_WINSIZY "G2dGraphicSizeY"
     #define TCS_INIDEF_WINSIZY 85
- #define TCS_INIVAR_STATPOSX "G2dStatusPosX"
+/* #define TCS_INIVAR_STATPOSX "G2dStatusPosX"
     #define TCS_INIDEF_STATPOSX 1
  #define TCS_INIVAR_STATPOSY "G2dStatusPosY"
     #define TCS_INIDEF_STATPOSY 91
@@ -139,7 +139,7 @@
     #define TCS_INIDEF_STATSIZX 98
  #define TCS_INIVAR_STATSIZY "G2dStatusSizeY"
     #define TCS_INIDEF_STATSIZY 3
-
+*/
  #define TCS_INIVAR_LINCOL "G2dLinCol"
     #define TCS_INIDEF_LINCOL 1
  #define TCS_INIVAR_TXTCOL "G2dTxtCol"
@@ -218,8 +218,8 @@
     #define TCS_INIDEF_XMLPARSERL 8
  #define TCS_INIVAR_XMLOPEN "G2dXMLopen"
     #define TCS_INIDEF_XMLOPEN "GRAPH2D Error opening %s"
-    #define TCS_INIVAR_XMLOPENL "G2dXMLerrorL"
-    #define TCS_INIDEF_XMLOPENL 1
+    #define TCS_INIVAR_XMLOPENL "G2dXMLopenL"
+    #define TCS_INIDEF_XMLOPENL 0 // no errormessage due to wxTCSmain.cpp
  #define TCS_INIVAR_UNKNAUDIO "G2dAudio"
     #define TCS_INIDEF_UNKNAUDIO "GRAPH2D Audio System: Error %s."
     #define TCS_INIVAR_UNKNAUDIOL "G2dAudioL"
