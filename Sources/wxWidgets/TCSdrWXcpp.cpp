@@ -1,8 +1,8 @@
 /** ****************************************************************************
 \file       TCSdrWXcpp.cpp
 \brief      wX Port: Low-Level Driver
-\version    1.0
-\author     (C) 2023 Dr.-Ing. Klaus Friedewald
+\version    1.1
+\author     (C) 2024 Dr.-Ing. Klaus Friedewald
 \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
          Systemnahe Graphikroutinen für die Tektronix Emulation
@@ -601,12 +601,12 @@ void XMLreadProgPar (const char * filname)
         return;
       }
       NodeSect0=  nullptr;
-      if (xmlDoc.GetRoot()->GetName().IsSameAs(TCS_INISECT0)) {
+      if (xmlDoc.GetRoot()->GetName().IsSameAs(szTCSsect0)) {
         NodeSect0= xmlDoc.GetRoot() ;
       } else {
         node= xmlDoc.GetRoot()->GetChildren();
         while (node != nullptr) {
-          if (node->GetName().IsSameAs(TCS_INISECT0)) {
+          if (node->GetName().IsSameAs(szTCSsect0)) {
             NodeSect0= node;
             break;
           }

@@ -1,6 +1,6 @@
 C> \file       AG2.for
 C> \brief      Graph2D: Tektronix Advanced Graphing II Emulation
-C> \version    (2023,135, x)
+C> \version    (2024,347, x)
 C> \author     (C) 2022 Dr.-Ing. Klaus Friedewald
 C> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 C>
@@ -96,8 +96,8 @@ C
       integer ilevel(3)
 
       call TCSLEV (ilevel) ! level(3)= System aus TCS
-      ilevel(1)=2023       ! Aenderungsjahr
-      ilevel(2)= 135       ! Aenderungstag
+      ilevel(1)=2024       ! Aenderungsjahr
+      ilevel(2)= 347       ! Aenderungstag
       return
       end
 
@@ -147,6 +147,16 @@ C
       if (par .gt. 0.) then
        cinfin= par
       end if
+      return
+      end
+
+
+
+      real function ag2infin ()
+      implicit none
+      include 'G2dAG2.fd'
+
+      ag2infin= cinfin
       return
       end
 

@@ -154,12 +154,14 @@ if /I "%1%" neq "wX" goto NowX
  echo on
  copy libgraph2d.a                      ..\..\Binaries\wX\64bit\*.*
  copy graph2d.h                         ..\..\Binaries\wX\64bit\*.*
- copy graph2d.h                         ..\..\Binaries\wX\64bit\*.*
  copy Graph2D.f08                       ..\..\Binaries\wX\64bit\*.*
+ copy Graph2D.mod                       ..\..\Binaries\wX\64bit\*.*
  copy ColourDemo.exe                    ..\..\Binaries\wX\64bit\Demo\*.*
  copy wxDemo\wxDemo.exe                 ..\..\Binaries\wX\64bit\Demo\wxDemo\*.*
  copy D?.exe                            ..\..\Binaries\wX\64bit\Demo\*.*
  copy D1.xml                            ..\..\Binaries\wX\64bit\Demo\*.*
+ copy Graph2D.xml                       ..\..\Binaries\wX\64bit\Demo\*.*
+ copy Graph2DGerman.xml                 ..\..\Binaries\wX\64bit\Demo\*.*
  copy DoxOut\*.chm                      ..\..\Doc\DoxyGen
  copy DoxOut\wXlatex-en\refman.pdf      ..\..\Doc\DoxyGen\wXdox-en.pdf
  goto done

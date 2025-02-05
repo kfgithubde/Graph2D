@@ -11,9 +11,9 @@ end function f1ftn
 
 
 subroutine f1pltftn (f1, xmin, xmax) bind (C)
-    use iso_c_binding, only: c_float
 
-use Graph2D
+    use Graph2D
+    use iso_c_binding, only: c_float
 
     implicit none
 
@@ -26,23 +26,17 @@ use Graph2D
         end function f1
     end interface
 
-! CC Uebernahme in Modul Graph2d CCCCCCCCCCCCCCCCCCCCCCC
-
-
-! CC End Uebernahme CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-
-
-    integer nPts
-    parameter (nPts=100)
-    real x(0:nPts), y(0:nPts)
+    integer nPoints
+    parameter (nPoints=100)
+    real x(0:nPoints), y(0:nPoints)
     integer i
     real dx
 
 
-    x(0)= nPts  ! Fill TekLong Data Arrays
-    y(0)= nPts
-    dx= (xmax-xmin) / (nPts-1)
-    do i=1,nPts
+    x(0)= nPoints  ! Fill TekLong Data Arrays
+    y(0)= nPoints
+    dx= (xmax-xmin) / (nPoints-1)
+    do i=1,nPoints
      x(i)= xmin+ (i-1)* dx
      y(i)= f1(x(i))
     end do

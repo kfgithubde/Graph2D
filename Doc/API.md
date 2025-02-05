@@ -150,6 +150,12 @@ iArr(1)= year, iArr(2) day of release. iArr(3) defines the port:
 
 <br>
 
+#### AG2infin ()
+
+real function ag2infin (): Returns the definition of machine infinity. Can be changed by calling subroutine infin(value).
+
+<br>
+
 #### GetENV (cBuf, iBufLen)
 
 DOS-only: Gets an enviroment variable. E.g. a call with cBuf= 'PATH='//char(0) will return the path in cBuf and its length in iBufLen.

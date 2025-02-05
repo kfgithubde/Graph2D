@@ -1,6 +1,6 @@
 C> \file       TCS.for
 C> \brief      TCS: Tektronix Plot 10 Emulation
-C> \version    4.0
+C> \version    4.1
 C> \author     (C) 2022 Dr.-Ing. Klaus Friedewald
 C> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 C> \~german
@@ -10,6 +10,9 @@ C> System independent subroutines
 C> \~
 C
 C CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC   Changelog   CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C      26.07.23 Version 5.0:
+C               Einheitliche Version CPM/DOS/Windows/SDL2/wX
 C
 C      27.11.20 Version 4.0:
 C               Einheitliche Version CPM/DOS/Windows/SDL2
@@ -109,12 +112,12 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
 C  Anpassung an DOS:
 C
-C      Änderungen gegenüber CP/M-Version:
+C      Aenderungen gegenueber CP/M-Version:
 C               SEELOC, DCURSR, SVSTAT, RESTAT, CSIZE in TCSdrDOS.FOR
 C      Bugfix:  DASHA, DASHR - Korrektur Parameterliste
 C               SEETRM - ibaud statt ibaudr
 C
-C      Zugehörige Module:
+C      Zugehoerige Module:
 C               TKTRNX.FOR    Common-Block TKTRNX
 C               TCSdrDOS.FOR  Bildschirmtreiber
 C               TCSdDOSa.ASM  Betriebssystemspezifische Low-Level Routinen
@@ -134,10 +137,10 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
 C  Anpassungen an Microsoft-Windows:
 C
-C      Änderungen gegenüber DOS-Version:
+C      Aenderungen gegenueber DOS-Version:
 C               INITT befinden sich jetzt in TCSdrWIN.FOR bzw. TCSinitt.FOR
 C
-C      Zugehörige Module:
+C      Zugehoerige Module:
 C               TKTRNX.FOR    Common-Block TKTRNX
 C               TKTRNX.h      Common-Block TKTRNX für Zugriff durch C
 C               TCSdrWIN.FOR  Bildschirmtreiber
@@ -155,11 +158,11 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
 C  Anpassungen an SDL2:
 C
-C      Änderungen gegenüber Windows-Version:
+C      Aenderungen gegenueber Windows-Version:
 C               Fehlerausgabe in den Windows-Debug-Channel (bzw. *ix Fehlerkanal)
 C               Statusfenster analog DOS nur einzeilig ohne Scrollmöglichkeit
 C
-C      Zugehörige Module:
+C      Zugehoerige Module:
 C               TKTRNX.FOR    identisch mit Windows-Version
 C               TKTRNX.h      identisch mit Windows-Version
 C               TCSdrSDL.FOR  SDL2-spezifische API-Routinen
@@ -169,6 +172,27 @@ C               STRINGS.FOR   identisch mit Windows-Version
 C
 C      27.11.20 Version 4.00: Dr.-Ing. K. Friedewald
 C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C  Anpassungen an WXwidgets:
+C
+C      Aenderungen gegenueber SDL2-Version:
+C               Fehlerausgabe in den wxLogStatus
+C               Statusfenster durch initt1() konfigurierbar
+C
+C      Zugehoerige Module:
+C               TKTRNX.FOR     identisch mit Windows-Version
+C               TKTRNX.hpp     identisch mit Windows-Version
+C               TCSdrWXfor.f08 WX-spezifische API-Routinen
+C               TCSdrWXcpp.cpp WX-spezifische API-Routinen
+C               TCSdrWXcpp.hpp Compiler- und systemspezifische Deklarationen
+C               STRINGS.FOR    identisch mit Windows-Version
+C               Graph2D.f08    Interfacemodul Anwenderprogramme ab Fortran 2003
+C               graph2d.h      Header fuer C/Cpp Anwenderprogramme
+C
+C      26.07.23 Version 5.00: Dr.-Ing. K. Friedewald
+C
+
 
 
 C
@@ -535,4 +559,3 @@ C      call movabs(klmrgn,750) Fuer CP/M (kein khomey verfuegbar, -> !=750)
       genflg= item.eq.0
       return
       end
-	  

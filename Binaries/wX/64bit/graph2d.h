@@ -1,7 +1,7 @@
 /** ****************************************************************************
 \file      graph2d.h
 \brief     C/C++ API definitions
-\version   1.2
+\version   1.3
 \author    Dr.-Ing. Klaus Friedewald
 \copyright GNU LESSER GENERAL PUBLIC LICENSE Version 3
 \~german
@@ -118,11 +118,11 @@ void fform_ (float* f1, int* i1, int* i2, int* i3, int* i4);
 #define FONLY fonly_
 void fonly_ (float* f1, int* i1, int* i2, int* i3, int* i4);
 #define GLINE gline_
-void gline_ (int* i1, int* i2, int* i3);
+void gline_ (int* i1, float* f2, int* i3);
 #define HLABEL hlabel_
 void hlabel_ (int* i1, int* i2);
 #define HSTRIN hstrin_
-void hstrin_ (int* i1, int* i2);
+void hstrin_ (int* i1);
 #define IFORM iform_
 void iform_ (int* i1, int* i2, int* i3, int* i4);
 #define IOTHER iother_
@@ -457,6 +457,11 @@ void anmode_ (void);
 void pclipt_ (void);
 
 
+// ************************** AG2: extensions *********************************
+
+
+#define AG2INFIN ag2infin_
+float ag2infin_ (void);
 
 // ************************** TCS: extensions *********************************
 

@@ -12,6 +12,7 @@ sich dort auch die Projektdateien für CodeBlocks (Windows IDE) UND EIN LINUX BAS
 ### Verwendung der Graphikbibliothek:
 Die Haupteigenschaften können folgendermaßen angepasst werden:
 - Initialisierung: Durch das Unterprogramm WINLBL und/oder *.xml-Dateien
+- Internationalisierung durch GNU gettext
 - Icons (nur bei Windows): Durch Linken einer Resource
 \n\n
 
@@ -19,16 +20,36 @@ Die Haupteigenschaften können folgendermaßen angepasst werden:
 werden standardmäßig als proprietäres ASCII-Journalfile *.hdc ausgegeben. Durch Änderung der Dateinamenerweiterung sind auch Ausgaben als Bitmap (*.bmp) und Jpeg (*.jpg) möglich. 
 
 
-\page "Initialisierung der Zeichenfenster"
-## Verwendung des Unterprogramms INITT1 zur Initialisierung 
-tbd.
+\page "Programmierschnittstelle"
+## Anwendungsmöglichkeiten
+Die unterschiedlichen Anwendungsmöglichkeiten, von der Portierung eines DOS-Programmes bis zur Verwendung mehrerer wX-Zeichenfenster, können den Beispielprogrammen entnommen werden.
+## Verwendung des Unterprogramms initt1() zur Initialisierung 
+Dieses Unterprogramm ist ein reines C Unterprogramm und steht nur unter wX zur Verfügung. Es dient zur Erzeugung von (mehreren) Zeichenfenstern. Falls das Unterprogramm WINLBL verwendet wird, muss es vor initt1() aufgerufen werden. Die Reihenfolge ist somit:
 
-\page "Compilersettings für Windows"
-## Setup der Entwickungsumgebung fuer Windows
-### MingGW fuer Windows 32bit und 64bit
-#### Grundkonfiguration der Entwicklungsumgebung (TDM und CodeBlocks)
-Es werden beide TDM-Toolchains (32bit und 64bit) installiert (z.B. nach C:\UsrProg\TDM-GCC-64 und C:\UsrProg\TDM-GCC-32). Dann in CodeBlocks unter
-Settings -> Compiler  bei Selected Compiler folgende Einträge vornehmen:
+WINLBL() -> initt1() -> INITT ()
+### Aufruf
+initt1 (int iMode, wxFrame* parent, wxFrame* FrameToUse, wxStatusBar* StatusBarToUse);
+### Parameter
+#### iMode
+iMode= 0: Aus INITT(iDummy) mit (0, nullptr, nullptr, nullptr) -> reset TCS and return
+
+iMode= 1: aus wxDemoFrame.cpp mit (1, this, nullptr, nullptr) -> this ist das Elternfenster -> Neues Fenster mit Statuszeile und Titel, Groesse und Position aus TCS-Initialisierung
+
+iMode= 2: aus wxTCSmain.cpp mit (2, nullptr, wxAppframe, nullptr) -> verwendet vorhandenes Frame ohne Eltern und mit neuer Statuszeile. 
+
+iMode= 3: aus wxDemoFrame.cpp mit (3, this, (wxFrame*) Panel2, StatusBar1) -> verwendet vorhandenes Panel und Statuszeile.
+Die Übergabe eines Panels als Frame ist im Mode 3 zulässig, da es lediglich ein weiteres Zeichenpanel aufnimmt und keine spezifischen Frame-Methoden angewendet werden.
+#### parent
+Elternfenster oder NULL
+#### FrameToUse
+vorhandes Frame oder Panel als Zeichenbereich. Default: NULL
+#### StatusBarToUse
+vorhandene Statuszeile bzw. NULL
+
+
+\page "Compilersettings für Windows (MinGW)"
+## Setup der Entwickungsumgebung fuer Windows (TDM und CodeBlocks)
+Es wird die 64bit TDM-Toolchain installiert. Dann in CodeBlocks unter Settings -> Compiler  bei Selected Compiler folgende Einträge vornehmen:
 - GNU GCC Compiler:\n 
 "Compiler Settings" -> "Compiler Flags" General\Target 64bit [-m64]\n
 " Toolchain executables" : C:\UsrProg\TDM-GCC-64
@@ -36,26 +57,82 @@ Settings -> Compiler  bei Selected Compiler folgende Einträge vornehmen:
 "Compiler Settings" -> "Other Compiler options": -m64\n
 "Toolchain executables" : C:\UsrProg\TDM-GCC-64
 
-Zur Erzeugung der 32bit Version müssen lediglich die globalen GCC Settings entsprechend geändert werden. Die 32-bit-Einstellungen werden in CodeBlocks als neue Compiler definiert und entsprechend in den Projektdateien bei SDL32 und SDL64 unterschieden.
-
 Fortran2008 Module werden in der CodeBlocks IDE über die Voreinstellungen in dem Objektverzeichnis abgelegt. Bei einer Neukompilation wird dieses Verzeichnis bereinigt und dabei werden  alle *.mod Dateien gelöscht. -> Bei Aufteilung der zu entwickelnden Unterprogrammbibliothek (Graph2D) und dem Testprogramm (wxDemo) problematisch. Deswegen wird das IDE-Setting so geändert, dass die *.mod-Dateien neben den Sourcedateien erzeugt werden (GCC Parameter -J):\n
-Compiler Settings -> GlobalCompilerSettings -> SelectedCompiler:GNU FortranCompiler -> OtherSettings -> AdvancedOptions -> Command:CompileSingleFileToObjectFile -> -J $objects_output_dir -> LÖSCHEN!\n
+Compiler Settings -> GlobalCompilerSettings -> SelectedCompiler:GNU FortranCompiler -> OtherSettings -> AdvancedOptions -> Command:CompileSingleFileToObjectFile -> -J $objects_output_dir -> LÖSCHEN!
+
+
 Bei dem in einem anderen Ordner befindlichen Testprogramm kann jetzt über die Projekteinstellungen der Parameter -J entsprechend gesetzt werden. Ohne das vorherige Löschen aus den IDE-Settings würde gfortran mit zwei widersprüchlichen -J-Parametern aufgerufen werden -> gfortran bräche dann die Kompilation mit einer Fehlermeldung  ab.
 
-### OpenSource Bibliotheken
 
-tbd.
-\n\n
+## Einstellungen für eigene Anwenderprogramme
+
+### Linken von wX-Hauptprogrammen:
+siehe Beispiel wxDemo, Reihenfolge ist Hauptprogramm, teklib, wx, windows, gfortran:\n
+
+        <Add library="../libgraph2d.a" />\n
 
 
-### EINSTELLUNGEN FÜR EIGENE ANWENDERPROGRAMME
+        <Add library="libwxmsw31u.a" />\n
+        <Add library="libwxpng.a" />\n
+        <Add library="libwxjpeg.a" />\n
+        <Add library="libwxtiff.a" />\n
+        <Add library="libwxzlib.a" />\n
+        <Add library="libwxexpat.a" />\n
 
-#### Compilerschalter Fortran 64bit:
-- tbd.
 
-####Link
-- tbd.
+        <Add library="libkernel32.a" />\n
+        <Add library="libuser32.a" />\n
+        <Add library="libgdi32.a" />\n
+        <Add library="libwinspool.a" />\n
+        <Add library="libcomdlg32.a" />\n
+        <Add library="libadvapi32.a" />\n
+        <Add library="libshell32.a" />\n
+        <Add library="libole32.a" />\n
+        <Add library="liboleaut32.a" />\n
+        <Add library="libuuid.a" />\n
+        <Add library="libcomctl32.a" />\n
+        <Add library="libwsock32.a" />\n
+        <Add library="libodbc32.a" />\n
+        <Add library="libshlwapi.a" />\n
+        <Add library="libversion.a" />\n
+        <Add library="liboleacc.a" />\n
+        <Add library="libuxtheme.a" />\n
 
+
+        <Add library="libgfortran.a" />\n
+
+### Linken von Fortran-Hauptprogrammen
+Die übliche Toolchain erzeugt durch Aufruf der (automatisch generierten) Startroutine "main" ein sequentielles Programm ohne Event-Loop. Die Verwendung von wX ist so nicht möglich, da alle wX-Aktionen auf Event-Handlern beruhen. Erschwerend kann eine Überlagerung durch ein c++-Programm durch IMPLEMENT_APP nur erfolgen, falls das Objektfile des Hauptprogrammes keine Definition das Symbols "main" beinhaltet.
+
+Mögliche Vorgehensweisen:
+
+- Falls ein Ändern des Hauptprogrammes im Quelltext möglich ist (siehe Projekt D2):
+1. Ändern (bzw. Hinzufügen falls "PROGRAM" nicht vorhanden ist) der Anweisung "PROGRAM [Name]" zu "SUBROUTINE FtnMain2sub".
+2. Ändern des Hauptprogrammendes von "STOP / END"  zu "RETURN / END" oder nur "END" (s.o.)
+3. Linken mit wxTCSmain2sub.cpp als Hauptprogramm
+
+
+- Falls ein Ändern des Hauptprogrammes in eine Subroutine nicht möglich/erwünscht ist und das Hauptprogramm nur mit "END" und nicht "STOP / END" abgeschlossen wird (s.D1):
+1. Getrennte Kompilation des Hauptprogrammes und anschliessendes Bearbeiten der Objektdatei: gcc -c ag2demo1.for
+2. Löschen des Symbols main mit dem GNU-binutil "STRIP -Nmain ag2demo1.o"
+3. Der Einsprung in das Hauptprogramm "MAIN__" muss global sichtbar sein: objcopy  --globalize-symbol=MAIN__  obj/ag2demo1.o
+4. Schritt 2 und 3 zusammengefasst: objcopy  --strip-symbol=main  --globalize-symbol=MAIN__  obj/ag2demo1.o
+5. Linken mit wxTCSmain.cpp als Hauptprogramm
+6. Anmerkung: wxTCSmain ist GNU-Compiler spezifisch, andere Compiler wurden nicht betrachtet.
+
+
+- Falls das Hauptprogramm nicht geändert, aber mit "STOP/END" abgeschlossen wird (s. D3):
+1. Erzeugung von Assemblercode des Hauptprogrammes:
+> Aus dem Fortrancode: gcc -S -m64 ag2demo3.for\n
+> Aus dem Objektcode: objdump -D -Mx86-64 --no-addresses --no-show-raw obj/ag2demo3.o > ag2demo3.s
+2. Änderungen in. ag2demo3.s (s. ag2demo3changed.s):\n
+Add: .        .globl        MAIN__\n
+Delete:         call        _gfortran_stop_string and surrounding\n
+Add:         addq        $152, %rsp ; $152 size from seh_stackalloc\n
+Add:        popq        %rbx, popq        %rbp, ret ; see prologue\n
+Delete:        .def __main -> seh_endproc main ;        main and surrounding\n
+3. Linken mit wxTCSmain.cpp als Hauptprogramm und MAIN__ aus ag2demo3changed.s und nicht ag2demo3.for\n
+4. Anmerkung: alle Anpassungen sind GNU-Compiler spezifisch, andere Compiler wurden nicht betrachtet.
 
 \page "Compilersettings für Linux"
 ## tbd.
@@ -73,18 +150,43 @@ After copying the source files by "$getfiles.bat wx" into the /build subdirector
 ### Using the library:
 The main properties can be adjusted as follows:
 - Initialization: By the WINLBL subroutine and/or *.xml files.
+- Internationalization by GNU gettext
 - Icons (Windows only): By linking a resource
 \n\n
 
 ### Hardcopies
 Default are proprietary ASCII-journalfiles with the default extension *.hdc. By choosing an other file extension bitmaps (*.bmp) and jpgs (*.jpg) are supported too.  
 
-\page "Compilersettings for Windows"
-## Setup of the Windows IDE
-### MingGW for Windows 32bit and 64bit
-#### Basic Configuration (TDM and CodeBlocks)
+\page "Application Programming Interface"
+## Possible applications
+The different use cases, from porting a DOS program to using several wX drawing windows, could be found in the example programs.
 
-Install both TDM-Toolchains, for 32- and for 64-bit (e.g. in C:\UsrProg\TDM-GCC-64 and C:\UsrProg\TDM-GCC-32). 
+## Using the initt1() subroutine for initialization 
+This subroutine is a pure C subroutine and is only available under wX. It is used to create one ore more drawing windows. If the WINLBL subroutine is used, it must be called before initt1(). The order is thus:
+
+WINLBL() -> initt1() -> INITT()
+### Call
+initt1 (int iMode, wxFrame* parent, wxFrame* FrameToUse, wxStatusBar* StatusBarToUse);
+### Parameters
+#### iMode
+iMode= 0: From INITT(iDummy) with (0, nullptr, nullptr, nullptr) -> reset TCS and return
+
+iMode= 1: from wxDemoFrame.cpp with (1, this, nullptr, nullptr) -> this is the parent window -> New window with status bar and title, size and position from TCS initialization
+
+iMode= 2: from wxTCSmain.cpp with (2, nullptr, wxAppframe, nullptr) -> uses existing frame without parents and with new status bar. 
+
+iMode= 3: from wxDemoFrame.cpp with (3, this, (wxFrame*) Panel2, StatusBar1) -> uses existing panel and status bar.
+Passing a panel as a frame is allowed in Mode 3 because it only takes up another drawing panel and no specific frame methods are applied.
+#### parent
+Parent window or NULL
+#### FrameToUse
+existing frame or panel as a drawing area. Default: NULL
+#### StatusBarToUse
+Existing status bar or NULL
+
+\page "Compilersettings for Windows (MinGW)"
+## Setup of the Windows IDE (TDM and CodeBlocks)
+Install the TDM-Toolchain for 64-bit (e.g. in C:\UsrProg\TDM-GCC-64 and C:\UsrProg\TDM-GCC-32). 
 Then edit the following entries in CodeBlocks at Settings -> Compiler:
 - GNU GCC Compiler:\n 
 "Compiler Settings" -> "Compiler Flags" General\Target 64bit [-m64]\n
@@ -93,19 +195,83 @@ Then edit the following entries in CodeBlocks at Settings -> Compiler:
 "Compiler Settings" -> "Other Compiler options": -m64\n
 "Toolchain executables" : C:\UsrProg\TDM-GCC-64
 
-In order to build 32bit programs the global GCC settings have to be changed accordingly. The 32bit settings define new compilers and can now be distinguished from the 64bit versions when used inside the 32bit workspaces.
 
+Fortran2008 modules are stored in the CodeBlocks IDE via the preferences in the object directory. A recompilation cleans up this directory and deletes all *.mod files. -> Problematic when splitting the subroutine library to be developed (Graph2D) and the test program (wxDemo). Therefore, the IDE setting is changed so that the *.mod files are created next to the source files (GCC parameter -J):\n
+Compiler Settings -> GlobalCompilerSettings -> SelectedCompiler:GNU FortranCompiler -> OtherSettings -> AdvancedOptions -> Command:CompileSingleFileToObjectFile -> -J $objects_output_dir -> DELETE!
+
+
+For the test program located in a different folder, the parameter -J has to be set accordingly via the project settings. Without the prior deletion from the IDE settings, gfortran would be called with two contradictory -J parameters -> gfortran would then abort the compilation with an error message.
+
+
+## Settings for your own user programs
+
+### Linking of wX main programs
+see example wxDemo, order is main program, teklib, wx, windows, gfortran:\n
+
+        <Add library="../libgraph2d.a" />\n
+
+
+        <Add library="libwxmsw31u.a" />\n
+        <Add library="libwxpng.a" />\n
+        <Add library="libwxjpeg.a" />\n
+        <Add library="libwxtiff.a" />\n
+        <Add library="libwxzlib.a" />\n
+        <Add library="libwxexpat.a" />\n
+
+
+        <Add library="libkernel32.a" />\n
+        <Add library="libuser32.a" />\n
+        <Add library="libgdi32.a" />\n
+        <Add library="libwinspool.a" />\n
+        <Add library="libcomdlg32.a" />\n
+        <Add library="libadvapi32.a" />\n
+        <Add library="libshell32.a" />\n
+        <Add library="libole32.a" />\n
+        <Add library="liboleaut32.a" />\n
+        <Add library="libuuid.a" />\n
+        <Add library="libcomctl32.a" />\n
+        <Add library="libwsock32.a" />\n
+        <Add library="libodbc32.a" />\n
+        <Add library="libshlwapi.a" />\n
+        <Add library="libversion.a" />\n
+        <Add library="liboleacc.a" />\n
+        <Add library="libuxtheme.a" />\n
+
+
+        <Add library="libgfortran.a" />\n
+
+### Linking Fortran Main Programs
+The usual toolchain creates a sequential program without an event loop by calling the (automatically generated) start routine "main". The use of wX is not possible in this way, because all wX actions are based on event handlers. In addition, an overlay by a C++ program by IMPLEMENT_APP is impossible in case the object file of the main program does contain a definition of the symbol "main".
+
+Possible approaches:
+
+- If it is possible to change the main program in the source code (see project D2):
+1. Change (or add if "PROGRAM" is not present) the statement "PROGRAM [name]" to "SUBROUTINE FtnMain2sub".
+2. Change the main program end from "STOP / END" to "RETURN / END" or just "END" (see above)
+3. Link with wxTCSmain2sub.cpp as the main program
+
+- If changing the main program to a subroutine is not possible/desired and the main program is only closed with "END" and not "STOP / END" (see D1):
+1. Separate compilation of the main program and then editing the object file: gcc -c ag2demo1.for
+2. Delete the main symbol with the GNU binutil "STRIP -Nmain ag2demo1.o"
+3. The entry into the main program "MAIN__" has to be globally visible: objcopy --globalize-symbol=MAIN__ obj/ag2demo1.o
+4. Step 2 and 3 summarized: objcopy --strip-symbol=main --globalize-symbol=MAIN__ obj/ag2demo1.o
+5. Link with wxTCSmain.cpp as the main program
+6. Note: wxTCSmain is GNU compiler specific, other compilers have not been considered.
+
+- If the main program is not changed, but terminated with "STOP/END" (see D3):
+1. Generation of assembly code of the main program:
+> From the Fortran code: gcc -S -m64 ag2demo3.for\n
+> From the object code: objdump -D -Mx86-64 --no-addresses --no-show-raw obj/ag2demo3.o > ag2demo3.s
+2. Changes in. ag2demo3.s (see ag2demo3changed.s):\n
+Add: .        .globl        MAIN__\n
+Delete:         call        _gfortran_stop_string and surrounding\n
+Add:         addq        $152, %rsp ; $152 size from seh_stackalloc\n
+Add:        popq        %rbx, popq        %rbp, ret ; see prologue\n
+Delete:        .def __main -> seh_endproc main ;        main and surrounding\n
+3. Linking with wxTCSmain.cpp as the main program and MAIN__ from ag2demo3changed.s and not ag2demo3.for\n
+4. Note: all adaptations are GNU compiler specific, other compilers have not been considered.
 
 \n\n
-
-
-### Settings for own Applications
-
-#### Fortran 64bit Compilerswitches:
-- tbd.
-
-####Link
-- tbd.
 
 \page "Compilersettings for Linux"
 ## tbd.
