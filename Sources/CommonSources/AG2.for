@@ -1,7 +1,7 @@
 C> \file       AG2.for
 C> \brief      Graph2D: Tektronix Advanced Graphing II Emulation
-C> \version    (2024,347, x)
-C> \author     (C) 2022 Dr.-Ing. Klaus Friedewald
+C> \version    (2025,347, x)
+C> \author     (C) 2025 Dr.-Ing. Klaus Friedewald
 C> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 C>
 C> \~german
@@ -96,8 +96,8 @@ C
       integer ilevel(3)
 
       call TCSLEV (ilevel) ! level(3)= System aus TCS
-      ilevel(1)=2024       ! Aenderungsjahr
-      ilevel(2)= 347       ! Aenderungstag
+      ilevel(1)=2025       ! Aenderungsjahr
+      ilevel(2)=  70       ! Aenderungstag
       return
       end
 
@@ -2373,7 +2373,7 @@ C Label
       return
 
 200   continue ! Error Handler
-      outstr= '???'
+      outstr= '?I?'
       if (iwidth.lt.len(outstr)) outstr(iwidth+1:iwidth+1)= char(0)
       return
 
@@ -2399,8 +2399,9 @@ C Label
       end if
       fa= abs(fnum) ! Skalierung mindestens 2 signfikante Stellen: .1*abs(fnum)
 
-      if ( ((fa .lt. 10./cinfin) .or. (fa .gt. .1**idec))
-     1                        .and.(fa .lt. 10.**nDgtM)) then
+      if ( (((fa .lt. 10./cinfin) .or. (fa .gt. .1**idec)) ! Zahl mit Dezimalen darstellbar
+     1                        .and.(fa .lt. 10.**nDgtM))   ! Zahl mit Mantisse darstellbar
+     2      .or. ((iwidth.lt.idec+7))              ) then  ! oder Laenge zu kurz fuer E-Format
        call FONLYC (fnum,iwidth,idec, outstr)
       else
        call EFORMC (fnum,iwidth,idec, outstr)
@@ -2432,7 +2433,7 @@ C Label
       return
 
 200   continue ! Error Handler
-      outstr= '???'
+      outstr= '?F?'
       if (iwidth.lt.len(outstr)) outstr(iwidth+1:iwidth+1)= char(0)
       return
 
@@ -2465,7 +2466,7 @@ C Label
       return
 
 200   continue ! Error Handler
-      outstr= '???'
+      outstr= '?E?'
       if (iwidth.lt.len(outstr)) outstr(iwidth+1:iwidth+1)= char(0)
       return
 
@@ -2562,7 +2563,7 @@ C Label
         outstr(1:)= '1' // char(0) ! 1 wird nicht als 10**0 ausgegeben
        end if
       else ! outstr zu kurz
-       outstr= '???'
+       outstr= '?X?'
       end if
 
       return

@@ -1,6 +1,6 @@
 !> \file       Graph2D.f08
 !> \brief      wX Port: Fortran Interfacemodul
-!> \version    1.0
+!> \version    1.1
 !> \author     (C) 2025 Dr.-Ing. Klaus Friedewald
 !> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 !>
@@ -16,7 +16,7 @@ module Graph2D
     implicit none
 
 
-! ***************** Routines with string parameters ************************
+! ***************** TCS/AG2 Routines with string parameters ******************
 
 
     interface
@@ -1453,6 +1453,43 @@ module Graph2D
     interface
         subroutine DefaultColour () bind(C, name='defaultcolour_')
         end subroutine DefaultColour
+    end interface
+
+
+! ************************** String Utilities ********************************
+
+
+    interface
+      function LIB_MOVC3 (iByte, Source, Destination)
+        integer       :: iByte
+        character*(*) :: Source, Destination
+      end function
+    end interface
+
+    interface
+      function Substitute (Source, Destination, Old1, New1)
+        character*(*) :: Source, Destination, Old1, New1
+      end function
+    end interface
+
+    interface
+      function iStringLen (string)
+        integer iStringLen
+        character*(*) :: string
+      end function
+    end interface
+
+    interface
+      function iTrimLen (string)
+        integer iTrimLen
+        character*(*) :: string
+      end function
+    end interface
+
+    interface
+      function PrintString (buf)
+        character*(*) :: PrintString, buf
+      end function
     end interface
 
 end module Graph2D

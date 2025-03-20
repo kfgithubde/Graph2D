@@ -1,6 +1,6 @@
 !> \file       TCSdrWXfor.f08
 !> \brief      wX Port: High-Level Driver
-!> \version    (2024,351,8)
+!> \version    (2025,64,8)
 !> \author     (C) 2023 Dr.-Ing. Klaus Friedewald
 !> \copyright  GNU LESSER GENERAL PUBLIC LICENSE Version 3
 !>
@@ -38,8 +38,8 @@
 
       subroutine TCSLEV(LEVEL)
       integer LEVEL(3)
-      LEVEL(1)=2024     ! Aenderungsjahr
-      LEVEL(2)= 351     ! Aenderungstag
+      LEVEL(1)=2025     ! Aenderungsjahr
+      LEVEL(2)=  64     ! Aenderungstag
       LEVEL(3)=   8     ! System= wX
       return
       end
